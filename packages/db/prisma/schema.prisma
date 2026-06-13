@@ -1,0 +1,653 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+enum LifecycleStatus {
+  PROPOSED
+  DEVELOPMENT
+  TESTING
+  PRODUCTION
+  RETIRED
+}
+
+enum SystemEnvironment {
+  SANDBOX
+  NON_PRODUCTION
+  PRODUCTION
+}
+
+enum RiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum DataClassification {
+  PUBLIC
+  INTERNAL
+  CONFIDENTIAL
+  RESTRICTED
+}
+
+enum ControlCategory {
+  GOVERNANCE
+  MODEL_RISK
+  PRIVACY
+  SECURITY
+  THIRD_PARTY_RISK
+  EXPLAINABILITY
+  AUDITABILITY
+  HUMAN_OVERSIGHT
+  OPERATIONAL_RESILIENCE
+}
+
+enum EvidenceStatus {
+  NOT_STARTED
+  REQUESTED
+  COLLECTED
+  REVIEWED
+  EXPIRED
+}
+
+enum AuditStatus {
+  ON_TRACK
+  NEEDS_ATTENTION
+  BLOCKED
+}
+
+enum ComponentType {
+  MODEL
+  AGENT
+  PROMPT
+  TOOL
+  API
+  DATA_SOURCE
+  WORKFLOW
+  VENDOR
+}
+
+enum TestResult {
+  PASS
+  WARNING
+  FAIL
+}
+
+enum FindingSeverity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+  INFORMATIONAL
+}
+
+enum FindingStatus {
+  OPEN
+  IN_PROGRESS
+  REMEDIATED
+  ACCEPTED
+  CLOSED
+}
+
+enum EvidenceObjectStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  EXPIRED
+  ARCHIVED
+}
+
+enum EvidenceHealthValue {
+  CURRENT
+  EXPIRING_SOON
+  EXPIRED
+  MISSING
+}
+
+enum EvidenceValidationValue {
+  VALID
+  INVALID
+  EXPIRED
+  MISSING
+}
+
+enum ModelValidationStatus {
+  DRAFT
+  APPROVED
+  REJECTED
+  EXPIRED
+}
+
+enum PromptApprovalStatus {
+  DRAFT
+  APPROVED
+  REJECTED
+  RETIRED
+}
+
+enum PermissionType {
+  READ
+  WRITE
+  EXECUTE
+  ADMINISTRATIVE
+}
+
+enum ApprovalLevel {
+  NONE
+  SINGLE_APPROVAL
+  DUAL_APPROVAL
+  COMMITTEE_APPROVAL
+}
+
+model Persona {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  title       String
+  role        String
+  description String
+  createdAt   DateTime @default(now())
+}
+
+model AiSystem {
+  id                           String              @id @default(cuid())
+  slug                         String              @unique
+  name                         String
+  description                  String
+  businessPurpose              String
+  lifecycleStatus              LifecycleStatus
+  environment                  SystemEnvironment
+  businessOwner                String
+  technologyOwner              String
+  riskOwner                    String
+  executiveSponsor             String
+  customerFacing               Boolean
+  internalUserFacing           Boolean
+  personalData                 Boolean
+  materialBusinessProcess      Boolean
+  regulatedActivity            Boolean
+  autonomousAction             Boolean
+  financialTransaction         Boolean
+  externalThirdPartyDependency Boolean
+  dataClassification           DataClassification
+  jurisdictionsJson            String
+  useCaseType                  String
+  createdAt                    DateTime            @default(now())
+  updatedAt                    DateTime            @updatedAt
+  lastReviewDate               DateTime
+  nextReviewDate               DateTime
+  assessment                   RiskAssessment?
+  evidenceItems                EvidenceItem[]
+  systemControls               SystemControl[]
+  auditEvents                  AuditEvent[]
+  components                   AiSystemComponent[]
+  regulatoryControls           AiSystemRegulatoryControl[]
+  testRuns                     TestRun[]
+  findings                     Finding[]
+  evidenceObjects              EvidenceObject[]
+  evidenceHealth               EvidenceHealth[]
+  aiModels                     AiModel[]
+  promptAssets                 PromptAsset[]
+  agents                       Agent[]
+  authorityAssignment          AiSystemAuthority?
+  toolPermissions              ToolPermission[]
+  humanOversight               HumanOversight?
+  governedTools                GovernedTool[]
+  agentActions                 AgentAction[]
+  executionLogs                ExecutionLog[]
+  killSwitch                   KillSwitch?
+}
+
+model RiskAssessment {
+  id                       String    @id @default(cuid())
+  aiSystemId               String    @unique
+  aiSystem                 AiSystem  @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  score                    Int
+  customerImpact           RiskLevel
+  financialImpact          RiskLevel
+  privacyImpact            RiskLevel
+  operationalImpact        RiskLevel
+  regulatoryImpact         RiskLevel
+  autonomyLevel            RiskLevel
+  thirdPartyDependency     RiskLevel
+  dataSensitivity          RiskLevel
+  explainabilityNeed       RiskLevel
+  hallucinationRisk        RiskLevel
+  promptInjectionRisk      RiskLevel
+  modelDriftRisk           RiskLevel
+  toolMisuseRisk           RiskLevel
+  autonomyRisk             RiskLevel
+  explainabilityRisk       RiskLevel
+  uncontrolledAgentActions RiskLevel
+  delegatedAuthorityRisk   RiskLevel
+  toolAbuseRisk            RiskLevel
+  approvalBypassRisk       RiskLevel
+  runawayAutomationRisk    RiskLevel
+  overallRiskTier          RiskLevel
+  rationale                String
+  factorsJson              String
+  assessedAt               DateTime  @default(now())
+}
+
+model AiModel {
+  id               String                @id @default(cuid())
+  modelId          String                @unique
+  aiSystemId       String
+  aiSystem         AiSystem              @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  name             String
+  provider         String
+  version          String
+  modelType        String
+  purpose          String
+  fallbackModel    String?
+  validationStatus ModelValidationStatus
+  validationDate   DateTime?
+  owner            String
+  lifecycleStatus  LifecycleStatus
+}
+
+model PromptAsset {
+  id             String               @id @default(cuid())
+  promptId       String               @unique
+  aiSystemId     String
+  aiSystem       AiSystem             @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  name           String
+  description    String
+  version        String
+  owner          String
+  approvalStatus PromptApprovalStatus
+  approvedBy     String?
+  approvalDate   DateTime?
+  lastModified   DateTime
+  versions       PromptVersion[]
+}
+
+model PromptVersion {
+  id             String      @id @default(cuid())
+  promptAssetId  String
+  promptAsset    PromptAsset @relation(fields: [promptAssetId], references: [id], onDelete: Cascade)
+  version        String
+  changeSummary  String
+  modifiedBy     String
+  modifiedAt     DateTime
+}
+
+model Agent {
+  id                 String          @id @default(cuid())
+  agentId            String          @unique
+  aiSystemId         String
+  aiSystem           AiSystem        @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  name               String
+  description        String
+  owner              String
+  purpose            String
+  riskLevel          RiskLevel
+  lifecycleStatus    LifecycleStatus
+  agenticLevel       Int
+  agenticLevelName   String
+  executionLogs      ExecutionLog[]
+}
+
+model DelegatedAuthority {
+  id                   String              @id @default(cuid())
+  authorityLevel       Int                 @unique
+  authorityDescription String
+  approvalRequired     Boolean
+  maximumImpact        String
+  escalationPath       String
+  systemAssignments    AiSystemAuthority[]
+}
+
+model AiSystemAuthority {
+  id                   String             @id @default(cuid())
+  aiSystemId           String             @unique
+  delegatedAuthorityId String
+  notes                String
+  aiSystem             AiSystem           @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  delegatedAuthority   DelegatedAuthority @relation(fields: [delegatedAuthorityId], references: [id], onDelete: Cascade)
+}
+
+model ToolPermission {
+  id             String         @id @default(cuid())
+  aiSystemId     String
+  aiSystem       AiSystem       @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  toolName       String
+  permissionType PermissionType
+  approved       Boolean
+  owner          String
+  rationale      String
+}
+
+model HumanOversight {
+  id                String   @id @default(cuid())
+  aiSystemId        String   @unique
+  aiSystem          AiSystem @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  oversightRequired Boolean
+  oversightType     String
+  reviewPoint       String
+  escalationPath    String
+  owner             String
+}
+
+model GovernedTool {
+  id             String         @id @default(cuid())
+  toolId         String         @unique
+  aiSystemId     String
+  aiSystem       AiSystem       @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  name           String
+  description    String
+  riskLevel      RiskLevel
+  permissionType PermissionType
+  owner          String
+  reviewDate     DateTime
+  nextReviewDate DateTime
+  executionLogs  ExecutionLog[]
+}
+
+model AgentAction {
+  id                  String         @id @default(cuid())
+  actionId            String         @unique
+  aiSystemId          String
+  aiSystem            AiSystem       @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  name                String
+  description         String
+  riskLevel           RiskLevel
+  approvalRequirement ApprovalLevel
+  executionLogs       ExecutionLog[]
+}
+
+model ApprovalWorkflow {
+  id             String        @id @default(cuid())
+  workflowId     String        @unique
+  name           String
+  approvalLevel  ApprovalLevel
+  approverRole   String
+  escalationPath String
+  executionLogs  ExecutionLog[]
+}
+
+model ExecutionLog {
+  id                 String            @id @default(cuid())
+  executionId        String            @unique
+  aiSystemId         String
+  agentId            String
+  toolId             String
+  actionId           String
+  approvalWorkflowId String?
+  aiSystem           AiSystem          @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  agent              Agent             @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  tool               GovernedTool      @relation(fields: [toolId], references: [id], onDelete: Cascade)
+  action             AgentAction       @relation(fields: [actionId], references: [id], onDelete: Cascade)
+  approvalWorkflow   ApprovalWorkflow? @relation(fields: [approvalWorkflowId], references: [id], onDelete: SetNull)
+  outcome            String
+  timestamp          DateTime
+  initiatedBy        String
+  approvalReference  String?
+}
+
+model KillSwitch {
+  id          String   @id @default(cuid())
+  aiSystemId  String   @unique
+  aiSystem    AiSystem @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  enabled     Boolean
+  owner       String
+  lastTested  DateTime?
+  status      String
+}
+
+model AiSystemComponent {
+  id          String        @id @default(cuid())
+  aiSystemId  String
+  aiSystem    AiSystem      @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  type        ComponentType
+  name        String
+  provider    String
+  description String
+  criticality RiskLevel
+}
+
+model Control {
+  id                 String              @id @default(cuid())
+  code               String              @unique
+  title              String
+  category           ControlCategory
+  description        String
+  ownerRole          String
+  testingFrequency   String
+  regulatoryMappings RegulatoryMapping[]
+  systemControls     SystemControl[]
+}
+
+model Regulation {
+  id              String                  @id @default(cuid())
+  slug            String                  @unique
+  name            String
+  jurisdiction    String
+  regulator       String
+  description     String
+  whyItMatters    String
+  audience        String
+  status          String
+  effectiveDate   DateTime
+  requirements    RegulatoryRequirement[]
+  controls        RegulatoryControl[]
+}
+
+model RegulatoryRequirement {
+  id                 String               @id @default(cuid())
+  regulationId       String
+  regulation         Regulation           @relation(fields: [regulationId], references: [id], onDelete: Cascade)
+  referenceId        String
+  title              String
+  description        String
+  rationale          String
+  evidenceExamples   String
+  controlMappings    RequirementControl[]
+
+  @@unique([regulationId, referenceId])
+}
+
+model RegulatoryControl {
+  id                String                       @id @default(cuid())
+  regulationId      String
+  regulation        Regulation                   @relation(fields: [regulationId], references: [id], onDelete: Cascade)
+  controlId         String                       @unique
+  title             String
+  objective         String
+  testingApproach   String
+  evidenceRequired  String
+  requirementMappings RequirementControl[]
+  aiSystemMappings  AiSystemRegulatoryControl[]
+  evidenceItems     EvidenceItem[]
+  evidenceRequirements EvidenceRequirement[]
+}
+
+model RequirementControl {
+  id                  String                @id @default(cuid())
+  requirementId       String
+  regulatoryControlId String
+  requirement         RegulatoryRequirement @relation(fields: [requirementId], references: [id], onDelete: Cascade)
+  regulatoryControl   RegulatoryControl     @relation(fields: [regulatoryControlId], references: [id], onDelete: Cascade)
+
+  @@unique([requirementId, regulatoryControlId])
+}
+
+model AiSystemRegulatoryControl {
+  id                  String            @id @default(cuid())
+  aiSystemId          String
+  regulatoryControlId String
+  aiSystem            AiSystem          @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  regulatoryControl   RegulatoryControl @relation(fields: [regulatoryControlId], references: [id], onDelete: Cascade)
+  auditStatus         AuditStatus
+  notes               String
+
+  @@unique([aiSystemId, regulatoryControlId])
+}
+
+model RegulatoryMapping {
+  id             String  @id @default(cuid())
+  framework      String
+  obligation     String
+  citation       String
+  controlId      String
+  control        Control @relation(fields: [controlId], references: [id], onDelete: Cascade)
+}
+
+model SystemControl {
+  id          String      @id @default(cuid())
+  aiSystemId  String
+  controlId   String
+  aiSystem    AiSystem    @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  control     Control     @relation(fields: [controlId], references: [id], onDelete: Cascade)
+  auditStatus AuditStatus
+  notes       String
+
+  @@unique([aiSystemId, controlId])
+}
+
+model EvidenceItem {
+  id             String         @id @default(cuid())
+  aiSystemId     String
+  regulatoryControlId String?
+  aiSystem       AiSystem       @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  regulatoryControl RegulatoryControl? @relation(fields: [regulatoryControlId], references: [id], onDelete: SetNull)
+  title          String
+  controlCode    String
+  status         EvidenceStatus
+  owner          String
+  dueDate        DateTime
+  lastReviewedAt DateTime?
+  location       String
+}
+
+model EvidenceType {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String
+}
+
+model EvidenceRequirement {
+  id                  String                    @id @default(cuid())
+  requirementId       String                    @unique
+  controlId           String
+  regulatoryControlId String?
+  evidenceType        String
+  mandatory           Boolean
+  rationale           String
+  regulatoryControl   RegulatoryControl?        @relation(fields: [regulatoryControlId], references: [id], onDelete: SetNull)
+  evidenceLinks       EvidenceObjectRequirement[]
+  healthRecords       EvidenceHealth[]
+}
+
+model EvidenceObject {
+  id              String                    @id @default(cuid())
+  evidenceId      String                    @unique
+  aiSystemId      String
+  title           String
+  description     String
+  evidenceType    String
+  version         String
+  status          EvidenceObjectStatus
+  owner           String
+  reviewer        String
+  source          String
+  approvalDate    DateTime?
+  expirationDate  DateTime
+  createdDate     DateTime                  @default(now())
+  lastUpdated     DateTime                  @updatedAt
+  aiSystem        AiSystem                  @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  requirementLinks EvidenceObjectRequirement[]
+}
+
+model EvidenceObjectRequirement {
+  id                    String              @id @default(cuid())
+  evidenceObjectId      String
+  evidenceRequirementId String
+  evidenceObject        EvidenceObject      @relation(fields: [evidenceObjectId], references: [id], onDelete: Cascade)
+  evidenceRequirement   EvidenceRequirement @relation(fields: [evidenceRequirementId], references: [id], onDelete: Cascade)
+
+  @@unique([evidenceObjectId, evidenceRequirementId])
+}
+
+model EvidenceHealth {
+  id                    String                  @id @default(cuid())
+  aiSystemId            String
+  evidenceRequirementId String
+  health                EvidenceHealthValue
+  validation            EvidenceValidationValue
+  rationale             String
+  calculatedAt          DateTime                @default(now())
+  aiSystem              AiSystem                @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  evidenceRequirement   EvidenceRequirement     @relation(fields: [evidenceRequirementId], references: [id], onDelete: Cascade)
+
+  @@unique([aiSystemId, evidenceRequirementId])
+}
+
+model AuditEvent {
+  id         String   @id @default(cuid())
+  aiSystemId String
+  aiSystem   AiSystem @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  eventType  String
+  summary    String
+  actor      String
+  createdAt  DateTime @default(now())
+}
+
+model ControlTest {
+  id                           String          @id @default(cuid())
+  testId                       String          @unique
+  title                        String
+  description                  String
+  traditionalGovernanceConcept String
+  aiGovernanceInterpretation   String
+  whyItMatters                 String
+  severityIfFailed             FindingSeverity
+  enabled                      Boolean         @default(true)
+  testRuns                     TestRun[]
+  findings                     Finding[]
+}
+
+model TestRun {
+  id                String      @id @default(cuid())
+  controlTestId     String
+  aiSystemId        String
+  executionDate     DateTime    @default(now())
+  result            TestResult
+  resultDetails     String
+  evidenceReference String
+  controlTest       ControlTest @relation(fields: [controlTestId], references: [id], onDelete: Cascade)
+  aiSystem          AiSystem    @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+}
+
+model Finding {
+  id                    String            @id @default(cuid())
+  findingId             String            @unique
+  aiSystemId            String
+  controlTestId         String
+  title                 String
+  description           String
+  severity              FindingSeverity
+  status                FindingStatus
+  createdDate           DateTime          @default(now())
+  remediationTargetDate DateTime
+  owner                 String
+  aiSystem              AiSystem          @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  controlTest           ControlTest       @relation(fields: [controlTestId], references: [id], onDelete: Cascade)
+  exceptions            Exception[]
+}
+
+model Exception {
+  id             String   @id @default(cuid())
+  exceptionId    String   @unique
+  findingId      String
+  rationale      String
+  approvedBy     String
+  approvalDate   DateTime
+  expirationDate DateTime
+  finding        Finding  @relation(fields: [findingId], references: [id], onDelete: Cascade)
+}

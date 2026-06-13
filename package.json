@@ -1,0 +1,25 @@
+{
+  "name": "ai-risk-governance",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Demo AI Risk Governance platform for financial institutions.",
+  "scripts": {
+    "dev": "npm run dev --workspace @airg/web",
+    "dev:api": "npm run dev --workspace @airg/api",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "db:generate": "npm run db:generate --workspace @airg/db",
+    "db:migrate": "npm run db:migrate --workspace @airg/db",
+    "db:seed": "npm run db:seed --workspace @airg/db",
+    "smoke": "tsx scripts/smoke.ts"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  }
+}

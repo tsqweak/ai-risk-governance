@@ -1,0 +1,22 @@
+{
+  "name": "@airg/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:migrate": "tsx prisma/init-db.ts",
+    "db:seed": "tsx prisma/seed.ts"
+  },
+  "dependencies": {
+    "@airg/monitoring-engine": "*",
+    "@prisma/client": "^6.10.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "prisma": "^6.10.1",
+    "tsx": "^4.20.3"
+  }
+}
