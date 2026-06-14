@@ -137,6 +137,38 @@ Planned capabilities:
 - Assurance Scoring
 - Governance Operations Dashboard
 
+## UX Refactor 2 Planned Work - Full Site IA Redesign
+
+Status: Planned
+
+Priority: High
+
+UX Refactor 2 will implement the long-term information architecture blueprint in `docs/UX_ARCHITECTURE_REVIEW.md`. It should occur after the major evidence domains are implemented so the redesign reflects real governance workflows rather than only GitHub-backed evidence.
+
+Dependency:
+
+Complete evidence domains first:
+
+- GitHub
+- Logs
+- Portainer
+- Supabase
+- MCP
+- Notion
+- Secrets
+
+Planned objectives:
+
+- Simplify navigation and reduce global sidebar complexity.
+- Remove duplicate destinations and overlapping page responsibilities.
+- Consolidate fragmented workflows into hub-based architecture.
+- Improve auditor, executive, control-owner, and system-owner journeys.
+- Reduce page sprawl while preserving drill-down traceability.
+
+Decision rationale:
+
+Do not redesign around GitHub-only evidence. Complete the major evidence domains first, then redesign around real workflows, real evidence, and the way auditors, executives, control owners, and system owners actually move through the platform.
+
 ## Phase 10 Planned Work - Portfolio Analytics & Trends
 
 Phase 10 will add executive-grade analytical depth across the portfolio. These capabilities were previously planned as Phase 9, but the Evidence Source Framework and Manifest v2 work showed that governance operations should come before advanced analytics.

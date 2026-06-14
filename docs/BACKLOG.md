@@ -50,6 +50,70 @@ Goal: Operationalize governance through asset discovery, evidence collection, ev
 - Asset Drift Monitoring
 - Governance Manifest Drift Monitoring
 
+## Phase 9 Connector Roadmap
+
+Phase 9 is not complete until the major Travel Brain evidence domains support collection, validation, assurance, and traceability. GitHub now proves the operating pattern against the real Travel Brain repository, but Travel Brain governance also depends on logs, Portainer, Supabase, MCP, Notion, and secrets metadata.
+
+### 9A - GitHub Evidence & Assurance
+
+Status: In Progress
+
+Scope: Repository discovery, manifest collection, prompt collection, policy collection, workflow collection, provenance, artifact assurance, and control support validation.
+
+### 9B - Evidence Traceability
+
+Status: Planned
+
+Scope: Bidirectional navigation and reporting across `Control -> Evidence` and `Evidence -> Control`, with auditor-oriented traceability views.
+
+### 9C - Logs Connector
+
+Status: Planned
+
+Scope: Execution logs, monitoring results, control results, correlation IDs, runtime assurance, and evidence freshness.
+
+### 9D - Portainer Connector
+
+Status: Planned
+
+Scope: Container metadata, deployment metadata, runtime metadata, image provenance, service health, and deployment drift.
+
+### 9E - Supabase Connector
+
+Status: Planned
+
+Scope: Schema evidence, RLS policies, data inventory, query/audit logs, access controls, and privacy control support.
+
+### 9F - MCP Connector
+
+Status: Planned
+
+Scope: MCP server inventory, tool registry, tool permissions, execution activity, delegated authority enforcement, and agentic assurance.
+
+### 9G - Notion Governance Connector
+
+Status: Planned
+
+Scope: Governance records, approval notes, committee decisions, review evidence, exceptions, and human-governed evidence.
+
+### 9H - Secrets Metadata Connector
+
+Status: Planned
+
+Scope: Secret inventory metadata, ownership, storage location, access policy, rotation records, and plaintext prohibition evidence. Secret values must never be collected.
+
+### Phase 9 Completion Criteria
+
+Phase 9 is complete only when these evidence domains support collection, validation, assurance, and traceability:
+
+- GitHub
+- Logs
+- Portainer
+- Supabase
+- MCP
+- Notion
+- Secrets
+
 ## Phase 10 - Portfolio Analytics & Trends
 
 Goal: Add executive-grade analytical depth across the portfolio. Phase 10 should focus on trend storage, dynamic visualization, report generation, and portfolio-level analysis that helps leadership understand compliance posture, governance health, and risk movement over time.
@@ -58,6 +122,43 @@ Goal: Add executive-grade analytical depth across the portfolio. Phase 10 should
 - Historical Trend Storage
 - Executive PDF Export
 - Advanced Portfolio Analytics
+
+## Future Initiatives
+
+### UX Refactor 2 - Full Site IA Redesign
+
+Status: Planned
+
+Priority: High
+
+Reference: `docs/UX_ARCHITECTURE_REVIEW.md`
+
+Objectives:
+
+- Simplify navigation
+- Remove duplication
+- Consolidate workflows
+- Reduce page sprawl
+- Improve auditor workflow
+- Improve executive workflow
+- Improve control-owner workflow
+- Improve system-owner workflow
+- Implement hub-based architecture
+- Reduce global sidebar complexity
+
+Dependencies:
+
+- GitHub evidence domain
+- Logs evidence domain
+- Portainer evidence domain
+- Supabase evidence domain
+- MCP evidence domain
+- Notion evidence domain
+- Secrets evidence domain
+
+Decision rationale:
+
+UX Refactor 1 created the Evidence & Assurance Hub and reduced proof-layer fragmentation, but the broader platform should not be redesigned around GitHub-only evidence. Complete the major evidence domains first, then redesign the full site around real workflows, real assets, and real evidence.
 
 ## Operational Enhancements
 

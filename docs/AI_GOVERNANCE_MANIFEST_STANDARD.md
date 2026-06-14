@@ -376,7 +376,7 @@ assets:
   repositories:
     - name: GitHub - Travel Brain
       repository_type: GitHub
-      location: https://github.com/example-bank/travel-brain
+      location: https://github.com/local-reference/travel-brain
       owner: Michael Thompson
       contains:
         - Source Code
