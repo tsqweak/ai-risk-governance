@@ -1,14 +1,38 @@
 # Current State Assessment
 
 Platform: AI-Risk-Governance
-Current platform state: Phase 6F implemented
-Recommended next phase: Phase 7 - Evidence Repository & Auditor Experience
+Current platform state: Phase 8.5.1 planning update
+Recommended next strategic phase: Phase 9 - Governance Operations & Evidence Automation
 
 ## Purpose
 
-This document summarizes the state of the AI-Risk-Governance platform after Phase 6F. It is intended to support planning, stakeholder communication, and prioritization of the next implementation phase.
+This document summarizes the state of the AI-Risk-Governance platform after Phase 6F implementation and the Phase 8.5.1 planning updates. It is intended to support planning, stakeholder communication, and prioritization of the next implementation phases.
 
 The platform now demonstrates a bank-grade AI Governance Command Center organized around governance workflows, AI systems, and user personas. It has moved beyond a generic dashboard into a structured governance platform that can explain compliance posture, governance coverage, AI risk, agentic authority, evidence health, and control implementation status.
+
+## Key Insight
+
+AI systems are larger than repositories.
+
+Travel Brain demonstrated that governance requires visibility into the full AI system boundary, including:
+
+- GitHub
+- Local repositories
+- Databases
+- Containers
+- Documentation
+- MCP servers
+- External services
+- Secrets
+- Logs
+
+Evidence originates from assets. Governance therefore requires:
+
+```text
+AI System -> Assets -> Evidence Sources -> Governance
+```
+
+This is now a core project principle. Repository discovery remains important, but it is only one part of AI system onboarding.
 
 ## Strengths
 
@@ -31,6 +55,8 @@ Findings and exceptions exist as governance artifacts and are linked to monitori
 ### Evidence Governance
 
 Evidence objects, evidence requirements, and evidence health are implemented. Evidence is linked to controls and governance workflows, and the platform can demonstrate current, missing, expired, and invalid evidence conditions.
+
+The Evidence Source Framework clarified that evidence should be traced back to governed assets. Future evidence maturity depends on knowing whether evidence comes from repositories, databases, containers, documentation, MCP servers, external services, secrets, logs, monitoring systems, or human approval workflows.
 
 ### Executive Reporting
 
@@ -69,6 +95,8 @@ The auditor workspace exists structurally, but auditor workflows remain early. T
 ### Real Project Onboarding
 
 The platform is still primarily seeded with demonstration systems. Real project onboarding needs intake workflows, import paths, project metadata capture, owner validation, lifecycle assignment, and initial evidence requirement generation.
+
+AI Governance Manifest v2 is now the foundational onboarding artifact. `AI Governance.yaml` should become the entry point into governance by declaring ownership, purpose, AI characteristics, assets, evidence sources, risk profile, regulatory scope, and data context.
 
 ### Portfolio Search/Filtering
 
@@ -149,8 +177,39 @@ The following areas should be prioritized before the platform is used for scaled
 - Remediation workflow depth
 - Finding aging and SLA tracking
 - Exception expiration monitoring
+- AI system asset inventory
+- Asset connectors
+- Evidence source registry
+- Evidence collection automation
+- Evidence validation automation
+- Evidence freshness monitoring
+- Governance manifest drift monitoring
 
-## Recommended Next Phase
+## Future Governance Direction
+
+### Governance Operations & Evidence Automation
+
+The next strategic direction is to move from governance documentation to governance operations.
+
+The platform should operationalize the chain:
+
+```text
+AI System -> Assets -> Evidence Sources -> Governance
+```
+
+This means building the capabilities required to discover assets, collect evidence, validate evidence, monitor evidence freshness, detect drift, and score assurance. The AI Governance Manifest v2 provides the declared starting point for this operating model.
+
+Enterprise story:
+
+```text
+No manifest.
+No onboarding.
+No governance.
+```
+
+`AI Governance.yaml` becomes the governance entry point. It should tell the platform what the AI system is, who owns it, what assets compose it, where evidence originates, which risks apply, and which regulatory expectations shape the governance profile.
+
+## Recommended Phase Sequence
 
 ### Phase 7 - Evidence Repository & Auditor Experience
 
@@ -167,3 +226,7 @@ Recommended Phase 7 priorities:
 - Strengthen the auditor workspace around traceability, testing, evidence review, findings, exceptions, and package preparation.
 
 Phase 7 is the right next phase because it turns the platform's strongest governance concepts into audit-ready proof.
+
+### Phase 9 - Governance Operations & Evidence Automation
+
+After the evidence repository and repository discovery work, Phase 9 should focus on operationalizing evidence. The platform should move beyond showing that governance exists and begin answering how governance evidence is collected, validated, monitored, and kept current across the full AI system asset inventory.

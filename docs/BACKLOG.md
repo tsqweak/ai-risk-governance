@@ -1,9 +1,15 @@
 # AI Risk Governance Backlog
 
 Current release: v0.6.0
-Current platform state: Phase 6F implemented
+Current platform state: Phase 8.5.1 planning update
 
-This backlog reflects the project state after the Phase 6F UX and Information Architecture implementation. Completed Phase 6C, 6D, 6E, and 6F capabilities have been removed from the active backlog unless additional production-hardening work remains.
+This backlog reflects the project state after the Evidence Source Framework, AI Governance Manifest v2, and Travel Brain asset inventory analysis. The core planning principle is now:
+
+```text
+AI System -> Assets -> Evidence Sources -> Governance
+```
+
+AI governance cannot operate only at the repository level. Repositories remain important, but governed AI systems also include databases, containers, documentation, MCP servers, external services, secrets, logs, and other operational assets.
 
 ## Phase 7 - Evidence Repository & Auditor Experience
 
@@ -24,10 +30,29 @@ Goal: Move from seeded demonstration systems toward real project intake, portfol
 - Portfolio Search & Filtering
 - Real Project Onboarding
 - Cross-System Reporting
+- AI Governance Manifest onboarding
+- Repository Discovery & Governance Profiling
+- Human review workflow for suggested governance profiles
 
-## Phase 9 - Portfolio Analytics & Trends
+## Phase 9 - Governance Operations & Evidence Automation
 
-Goal: Add executive-grade analytical depth across the portfolio. Phase 9 should focus on trend storage, dynamic visualization, report generation, and portfolio-level analysis that helps leadership understand compliance posture, governance health, and risk movement over time.
+Goal: Operationalize governance through asset discovery, evidence collection, evidence validation, freshness monitoring, and assurance. Phase 9 should move the platform from governance documentation toward governance operations.
+
+- AI System Asset Inventory
+- Asset Connectors
+- Evidence Source Registry
+- Evidence Collection Engine
+- Evidence Validation Engine
+- Evidence Freshness Monitoring
+- Assurance Scoring
+- Governance Operations Dashboard
+- Asset Criticality Classification
+- Asset Drift Monitoring
+- Governance Manifest Drift Monitoring
+
+## Phase 10 - Portfolio Analytics & Trends
+
+Goal: Add executive-grade analytical depth across the portfolio. Phase 10 should focus on trend storage, dynamic visualization, report generation, and portfolio-level analysis that helps leadership understand compliance posture, governance health, and risk movement over time.
 
 - Dynamic Charts
 - Historical Trend Storage
@@ -50,7 +75,7 @@ Goal: Deepen operational governance workflows that already exist conceptually or
 
 ## Deferred Enhancements
 
-These items remain useful but are not part of the immediate Phase 7-9 critical path.
+These items remain useful but are not part of the immediate Phase 7-10 critical path.
 
 - Codex integration
 - Codex project import

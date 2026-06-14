@@ -15,12 +15,21 @@ Traditional Governance -> AI Governance -> Agentic AI Governance
 
 Traditional governance asks whether systems have owners, controls, evidence, approvals, monitoring, and audit trails. AI governance adds model, prompt, data, vendor, explainability, validation, human oversight, and AI risk domain controls. Agentic AI governance adds delegated authority, permitted actions, tool permissions, approval thresholds, execution logs, kill switches, and escalation for autonomous or semi-autonomous activity.
 
+The platform now treats the full AI system boundary as a core governance principle:
+
+```text
+AI System -> Assets -> Evidence Sources -> Governance
+```
+
+AI governance cannot operate only at the repository level. AI systems are composed of repositories, databases, containers, documentation, MCP servers, external services, secrets, logs, and other assets. Evidence originates from those assets, and governance must be able to trace each asset to evidence, controls, monitoring, assurance, and audit outcomes.
+
 ## Objectives
 
 - Maintain a complete registry of AI systems across ownership, lifecycle, risk tier, jurisdiction, components, controls, and evidence.
 - Map regulatory expectations to requirements, controls, evidence, and AI systems across major financial-services jurisdictions.
 - Continuously monitor control health and generate findings, exceptions, and executive-ready risk views.
 - Treat evidence as a governed object with ownership, validation, review, expiry, and traceability.
+- Treat AI system assets as governed sources of evidence, not as informal implementation details.
 - Provide executive, auditor, compliance, and governance committee experiences from the same source of record.
 - Encode AI-specific governance for models, prompts, agents, AI risk domains, human oversight, and delegated authority.
 - Extend governance to agentic systems that can use tools, draft or execute actions, and operate with different autonomy levels.
@@ -73,20 +82,78 @@ Planned capabilities:
 - Production approvals that require completed evidence, accepted residual risk, defined monitoring, and assigned accountable owners.
 - Retirement workflow for decommissioning AI systems, revoking tools, preserving evidence, closing findings, and documenting customer or operational impact.
 
-## Phase 7 Planned Work - Portfolio Expansion & Codex Integration
+## Phase 7 Planned Work - Evidence Repository & Auditor Experience
 
-Phase 7 will expand the platform from a seeded demonstration portfolio into a broader project-onboarding and cross-system governance experience.
+Phase 7 will transform evidence from a governance attribute into a first-class governance asset. Auditors, regulators, risk teams, and governance committees should be able to move from regulation to requirement to control to evidence to finding to exception without losing context.
 
 Planned capabilities:
 
-- Real project onboarding for existing AI systems and active development projects.
-- Portfolio expansion across multiple systems, risk tiers, jurisdictions, owners, and business lines.
-- Cross-system reporting for control health, regulatory coverage, findings, exceptions, evidence posture, AI risk domains, and agentic authority.
-- Codex integration for importing project metadata, creating governance records from repositories, and linking development activity to governance evidence.
+- Enterprise evidence repository.
+- Evidence viewer and evidence health dashboard.
+- Evidence traceability navigation.
+- Evidence search, filtering, and download capability.
+- Auditor evidence package generation.
+- Auditor workspace enhancements.
+
+## Phase 8 Planned Work - Repository Discovery & Governance Profiling
+
+Phase 8 will onboard AI systems through repository discovery and governance profiling. It should generate suggested governance profiles for human review rather than making final governance decisions automatically.
+
+Planned capabilities:
+
+- Repository discovery for GitHub and local repositories.
+- Governance profiling engine.
+- AI component detection for models, prompts, agents, tools, databases, and external services.
+- Evidence source detection for prompt files, configuration files, policy files, workflows, logs, monitoring sources, and approval sources.
+- Human review workflow for suggested, reviewed, approved, and rejected profiles.
+- Repository onboarding dashboard and review pages.
+
+## Phase 8.5 Planned Work - AI Governance Manifest Standard
+
+Phase 8.5 establishes `AI Governance.yaml` as the foundational onboarding artifact for governed AI systems.
+
+Enterprise story:
+
+```text
+No manifest.
+No onboarding.
+No governance.
+```
+
+`AI Governance.yaml` becomes the entry point into governance by declaring ownership, purpose, AI characteristics, assets, evidence sources, risk profile, regulatory scope, and data context. Manifest v2 expands the standard from repository-first onboarding to full AI system asset inventory.
+
+## Phase 9 Planned Work - Governance Operations & Evidence Automation
+
+Phase 9 will operationalize governance through asset discovery, evidence collection, validation, and assurance.
+
+Planned capabilities:
+
+- AI System Asset Inventory
+- Asset Connectors
+- Evidence Source Registry
+- Evidence Collection Engine
+- Evidence Validation Engine
+- Evidence Freshness Monitoring
+- Assurance Scoring
+- Governance Operations Dashboard
+
+## Phase 10 Planned Work - Portfolio Analytics & Trends
+
+Phase 10 will add executive-grade analytical depth across the portfolio. These capabilities were previously planned as Phase 9, but the Evidence Source Framework and Manifest v2 work showed that governance operations should come before advanced analytics.
+
+Planned capabilities:
+
+- Dynamic Charts
+- Historical Trend Storage
+- Executive PDF Export
+- Advanced Portfolio Analytics
 
 ## Roadmap Principles
 
 - Build from governance concepts the audience already understands.
 - Make AI-specific risk visible without hiding the familiar control, evidence, and accountability structure.
 - Keep agentic AI governance concrete by tying autonomy to actions, tools, approvals, logs, and human oversight.
+- Govern the whole AI system, not only the repository.
+- Treat assets as the origin point for evidence and assurance.
+- Use `AI Governance.yaml` as the foundational onboarding artifact for AI systems.
 - Preserve regulator and auditor traceability from executive summary down to control, evidence, and system detail.
