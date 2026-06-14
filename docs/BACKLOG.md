@@ -1,67 +1,89 @@
 # AI Risk Governance Backlog
 
 Current release: v0.6.0
-Documentation baseline: v0.6.1
+Current platform state: Phase 6F implemented
 
-This backlog captures known work items from completed phases, planned Phase 6C lifecycle governance, and planned Phase 7 portfolio expansion. Items are grouped by phase to preserve implementation context.
+This backlog reflects the project state after the Phase 6F UX and Information Architecture implementation. Completed Phase 6C, 6D, 6E, and 6F capabilities have been removed from the active backlog unless additional production-hardening work remains.
 
-## Phase 1 - AI System Registry
+## Phase 7 - Evidence Repository & Auditor Experience
 
-- Dynamic AI system routes
-- Codex project import
-- Jurisdiction normalization
-- Enhanced onboarding validation
-- Expanded lifecycle management
+Goal: Make evidence feel like governed proof, not passive attachments. Phase 7 should strengthen auditor workflows, traceability, evidence review, and evidence export patterns across controls, risks, findings, regulations, monitoring, implementations, and AI systems.
 
-## Phase 3 - Continuous Monitoring & Control Health
+- Evidence Repository
+- Evidence Viewer
+- Evidence Download Capability
+- Evidence Traceability Navigation
+- Evidence Search & Filtering
+- Auditor Evidence Package Generation
+
+## Phase 8 - Real Project Onboarding
+
+Goal: Move from seeded demonstration systems toward real project intake, portfolio scale, and operational onboarding. Phase 8 should support bringing existing projects into the governance platform with enough metadata, owners, lifecycle state, risk context, regulatory scope, and evidence expectations to make them governable.
+
+- Existing Codex Project Onboarding
+- Portfolio Search & Filtering
+- Real Project Onboarding
+- Cross-System Reporting
+
+## Phase 9 - Portfolio Analytics & Trends
+
+Goal: Add executive-grade analytical depth across the portfolio. Phase 9 should focus on trend storage, dynamic visualization, report generation, and portfolio-level analysis that helps leadership understand compliance posture, governance health, and risk movement over time.
+
+- Dynamic Charts
+- Historical Trend Storage
+- Executive PDF Export
+- Advanced Portfolio Analytics
+
+## Operational Enhancements
+
+Goal: Deepen operational governance workflows that already exist conceptually or structurally but need richer workflow behavior, review cadence, or evidence depth.
 
 - Warning-generating tests
-- Remediation workflow
 - Finding aging and SLA tracking
-- Control test scheduling
-- Manual evidence upload
 - Exception expiration monitoring
-
-## Phase 5 - Executive & Auditor Experience
-
-- Dynamic charts
-- Historical trend storage
-- Executive PDF export
-- Auditor evidence packages
-- Regulatory gap remediation workflow
-- Existing Codex project onboarding
-- Portfolio search and filtering
-
-## Phase 6A - AI Governance Framework
-
+- Tool permission review dates
+- Authority change approval
 - Prompt change approval workflow
 - Model validation detail page
 - Agent lifecycle workflow
-- Authority change approval
-- Tool permission review dates
 - AI risk domain testing evidence
 
-## Phase 6C Planned - AI Lifecycle Governance
+## Deferred Enhancements
 
-- AI intake process
-- Approval workflow
-- Development stage gates
-- Testing stage gates
-- Pilot approvals
-- Production approvals
-- Retirement workflow
+These items remain useful but are not part of the immediate Phase 7-9 critical path.
 
-## Phase 7 Planned - Portfolio Expansion & Codex Integration
-
-- Real project onboarding
-- Portfolio expansion
-- Cross-system reporting
 - Codex integration
+- Codex project import
+- Jurisdiction normalization
+- Enhanced onboarding validation
+- Remediation workflow
+- Control test scheduling
+- Manual evidence upload
+- Regulatory gap remediation workflow
+- Portfolio expansion
 
-## Backlog Themes
+## Removed / Superseded Items
 
-- Make seeded governance records dynamic and extensible across many real AI systems.
-- Strengthen workflow depth for approvals, remediation, lifecycle, and evidence collection.
-- Add trend, export, package, and search capabilities for leadership and audit use.
-- Connect governance records to project repositories and development activity.
-- Preserve the educational progression from traditional governance to AI governance to agentic AI governance.
+These items are removed from the active backlog because they were completed, absorbed into later phases, or superseded by the Phase 6F information architecture.
+
+- Dynamic AI System Routes - superseded by the unified dynamic AI System Workspace at `/systems/[slug]`.
+- Expanded Lifecycle Management - completed through Phase 6C AI Lifecycle Governance.
+- AI intake process - completed or absorbed into lifecycle and administration architecture.
+- Approval workflow - completed across lifecycle, risk acceptance, and governance committee patterns.
+- Development stage gates - completed through lifecycle stage-gate controls.
+- Testing stage gates - completed through lifecycle stage-gate controls.
+- Pilot approvals - completed through lifecycle approval model.
+- Production approvals - completed through lifecycle approval model.
+- Retirement workflow - completed through lifecycle governance model.
+- Evidence complete lifecycle control - completed through Phase 6C controls and monitoring.
+- AI risk register - completed through Phase 6D AI Risk Assessment Framework.
+- Inherent and residual risk models - completed through Phase 6D.
+- Risk treatment and acceptance model - completed through Phase 6D.
+- Control Implementation Registry - completed through Phase 6E Governance Engineering.
+- Implementation Evidence - completed through Phase 6E.
+- Governance Engineering Dashboard - completed through Phase 6E.
+- AI System Governance Engineering View - completed through Phase 6E and surfaced in the Phase 6F unified workspace.
+- Guided walkthrough placeholders - completed through Phase 6F.
+- Governance Framework navigation - completed through Phase 6F.
+- Auditor Workspace navigation - completed through Phase 6F.
+- Governance Committee navigation - completed through Phase 6F.
