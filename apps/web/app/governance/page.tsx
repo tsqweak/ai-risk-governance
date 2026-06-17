@@ -1,22 +1,8 @@
-import Link from "next/link";
-import { ClipboardCheck, FileCheck2, GitBranch, Radar, Route, ShieldAlert } from "lucide-react";
 import { getAiRiskDashboard, getExecutiveCommandCenter, getGovernanceOperationsDashboard } from "../data";
 import { formatDate, humanize } from "../components/format";
-import { Breadcrumbs, Section, SecondaryNav } from "../components/ui";
-import { governanceSecondaryNav } from "../navigation-model";
 import { GovernanceWorkClient, type GovernanceWorkItem } from "./GovernanceWorkClient";
 
 export const dynamic = "force-dynamic";
-
-const operationalViews = [
-  ["/ai-risk", "Risk Management", "Inherent and residual AI risk, treatment plans, and acceptances.", ShieldAlert],
-  ["/regulatory-coverage", "Regulatory Compliance", "Cross-system regulatory coverage, gaps, and jurisdiction exposure.", GitBranch],
-  ["/monitoring", "Control Monitoring", "Continuous control testing, findings, and exceptions.", Radar],
-  ["/evidence-repository", "Evidence Repository", "Proof objects, evidence search, traceability, downloads, and audit packaging.", FileCheck2],
-  ["/evidence-health", "Evidence Health", "Current, expiring, expired, missing, and invalid evidence across the portfolio.", FileCheck2],
-  ["/ai-lifecycle", "AI Lifecycle", "Intake, development, testing, pilot, production, and retirement gates.", Route],
-  ["/governance-engineering", "Governance Engineering", "Control to implementation to evidence to monitoring.", ClipboardCheck]
-] as const;
 
 export default async function GovernancePage() {
   const [data, operations, riskData] = await Promise.all([
@@ -247,33 +233,7 @@ export default async function GovernancePage() {
   ].sort(prioritySort);
 
   return (
-    <>
-      <header>
-        <Breadcrumbs items={[{ label: "Governance" }]} />
-        <p className="text-sm font-medium text-brand">Governance Work</p>
-        <h1 className="mt-1 text-3xl font-semibold text-ink">What needs governance attention today?</h1>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-          A focused operating queue for findings, evidence gaps, source issues, discovery findings, exceptions, risk acceptances, review tasks, and failed validations.
-        </p>
-        <SecondaryNav items={governanceSecondaryNav} />
-      </header>
-
-      <GovernanceWorkClient items={queueItems} />
-
-      <Section title="Supporting governance views">
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-          {operationalViews.map(([href, title, detail, Icon]) => (
-            <Link key={href} href={href} className="rounded-md border border-line bg-white p-4 hover:bg-panel">
-              <div className="flex items-center gap-2 text-sm font-semibold text-ink">
-                <Icon className="h-4 w-4 text-brand" />
-                {title}
-              </div>
-              <p className="mt-2 text-sm leading-6 text-slate-700">{detail}</p>
-            </Link>
-          ))}
-        </div>
-      </Section>
-    </>
+    <GovernanceWorkClient items={queueItems} />
   );
 }
 
