@@ -9,10 +9,11 @@ The roadmap tracks phases. The backlog tracks future work. The Feature Registry 
 Feature counts by status:
 
 - Complete: 10
-- Operational: 2
-- MVP: 15
+- Operational: 4
+- MVP: 18
 - Partial: 1
-- Planned: 5
+- Not Started: 0
+- Planned: 2
 - Deprecated: 0
 
 Completed features:
@@ -32,77 +33,85 @@ Operational features:
 
 - GitHub Connector
 - Logs Connector
+- Supabase Connector
+- Platform Review Agent
 
 Partial features:
 
-- Portainer Connector
+- Notion Governance Connector
 
 Planned features:
 
-- Supabase Connector
-- MCP Connector
-- Notion Governance Connector
-- Secrets Metadata Connector
 - UX Refactor 2 - Full Site IA Redesign
+- Skill Governance
+
+Not started features:
+
+- None for the major Phase 9 connector and discovery sequence.
 
 Current platform maturity:
 
-Level 3 - MVP, trending toward Level 4 - Operational.
+Level 3+ - MVP, trending toward Level 4 - Operational.
 
-The platform has a strong governed data model, seeded workflows, dashboards, traceability, evidence objects, AI governance, agentic governance, lifecycle governance, risk management, and governance engineering. GitHub evidence artifact collection and assurance are now operational against the real Travel Brain repository. Logs runtime evidence is operational for the Travel Brain reference scope with inspectable sanitized evidence artifacts. Portainer remains metadata-only, while Supabase, MCP, Notion, and Secrets connectors remain planned.
+The platform has a strong governed data model, seeded workflows, dashboards, traceability, evidence objects, AI governance, agentic governance, lifecycle governance, risk management, governance engineering, and operational internal platform review. GitHub evidence artifact collection and assurance are now operational against the real Travel Brain repository. Logs runtime evidence is operational for the Travel Brain reference scope with inspectable sanitized evidence artifacts. Portainer is MVP for the Travel Brain reference scope: the connector supports read-only deployed-state collection, validated deployment artifacts, assurance, traceability, and drift baseline recording when a read-only endpoint is available, and creates explicit gap evidence when the source is unavailable. Supabase is now operational for the Travel Brain reference scope through real read-only metadata collection, retained snapshots, drift detection, control validation, generated findings, assurance, and traceability. MCP is now MVP for the Travel Brain reference scope through real source-derived server inventory, tool registry, tool permissions, authority classification, capability inventory, assurance, and traceability. Notion is now Partial because the connector model, evidence sources, gap artifacts, assurance, and traceability exist, but scoped Travel Brain governance content has not been made available to the integration. Secrets is now MVP because real Travel Brain metadata-only secret inventory, rotation, ownership, usage mapping, and plaintext-prohibition evidence is collected without reading, storing, displaying, logging, hashing, exporting, or persisting secret values. Asset Discovery is now MVP because Travel Brain discovery compares manifest declarations against repository, workflow, configuration, documentation, connector metadata, runtime metadata, and secrets metadata, then validates each finding with source file, source asset, evidence, discovery rule, confidence level, and validation status before using it in inventory counts. Skill Governance is also planned as a later capability because Skills are increasingly becoming AI versions of human SOPs, workflows, playbooks, and procedures.
 
 Recommended next feature:
 
-Portainer Connector artifact collection, after Logs runtime evidence is validated with Travel Brain.
+Begin connector consistency cleanup. Normalize connector and discovery behavior
+across GitHub, Logs, Portainer, Supabase, MCP, Notion, Secrets, and Asset
+Discovery before UX Refactor 2.
 
 ## Current Focus
 
-Phase: Phase 9D
+Phase: Post-9X
 
-Feature: Portainer Connector
+Feature: Connector consistency cleanup
 
-Target: Runtime deployment evidence
+Target: Consistent connector and discovery operating model
 
-Objective: Move Portainer from metadata-only source registration to collected deployment and container runtime evidence artifacts.
+Objective: Normalize collection, validation, assurance, freshness, drift,
+traceability, gap artifacts, source issues, reviewer follow-up, and discovery
+signals across the major evidence domains.
 
 Explanation examples:
 
-- Container metadata to runtime evidence
-- Deployment metadata to production approval support
-- Runtime health to operational resilience assurance
-- Deployment drift to control-owner review
+- Connector status to consistent maturity language
+- Source health to consistent warning behavior
+- Gap artifacts to consistent reviewer actions
+- Discovery findings to governed inventory updates
+- Traceability to consistent control and evidence paths
 
 Why this is current focus:
 
-GitHub now proves design intent, and Logs now prove operational reality through metadata-only runtime evidence. Portainer is the next Tier 1 connector needed to prove deployed-state reality for Travel Brain.
+GitHub proves design intent, Logs prove operational activity, Portainer proves
+deployed-state reality, Supabase proves data-governance reality, MCP proves
+actual agent capability, Notion makes human-governance source gaps explicit,
+Secrets proves governed metadata without collecting secret values, and Asset
+Discovery now finds forgotten assets. The next operating-model gap is consistency
+across connector and discovery behaviors.
 
 ## Next Focus
 
-After Phase 9C, the connector sequence should be:
+After connector consistency cleanup, the roadmap sequence should be:
 
-1. Portainer Artifact Collection
+1. UX Refactor 2 - Full Site IA Redesign
+2. Phase 10 - Portfolio Analytics & Trends
 
-Purpose: Collect container metadata, deployment metadata, runtime metadata, and runtime evidence snapshots.
+Purpose: Use discovery to find assets humans forget, then normalize connector
+behavior across evidence domains, redesign the UX around mature proof workflows,
+and add executive-grade analytics and trends.
 
-2. Supabase Connector
+Secrets follows GitHub, Logs, Portainer, Supabase, MCP, and Notion because those
+domains establish design intent, runtime activity, deployed state, data
+governance, actual agent capability, and human governance evidence or explicit
+human-governance source gaps.
 
-Purpose: Collect schema, RLS policy, data inventory, query log, and privacy-control evidence.
+UX Refactor 2 should follow completion of the major evidence domains, Asset
+Discovery Engine, and connector consistency cleanup. The platform should
+redesign around complete evidence workflows spanning GitHub, Logs, Portainer,
+Supabase, MCP, Notion, Secrets, and discovered assets.
 
-3. MCP Connector
-
-Purpose: Collect tool inventory, permissions, execution activity, and delegated authority evidence.
-
-4. Notion Governance Connector
-
-Purpose: Collect governance decisions, approval records, review notes, and committee evidence.
-
-5. Secrets Metadata Connector
-
-Purpose: Collect secret inventory metadata, ownership, rotation, and access policy evidence without collecting secret values.
-
-These should follow GitHub and Logs because GitHub establishes the design-artifact pattern, while Logs establishes the runtime-evidence pattern for operational reality.
-
-UX Refactor 2 should follow completion of the major evidence domains. The platform should not redesign the full site around GitHub-only evidence; it should redesign around complete evidence workflows spanning GitHub, Logs, Portainer, Supabase, MCP, Notion, and Secrets.
+Skill Governance should follow connector completion and UX Refactor 2. It should govern Skills as first-class assets only after the platform has stable evidence workflows and a simplified information architecture.
 
 ## Dependency Guidance
 
@@ -111,6 +120,7 @@ Each feature includes a `Dependencies` field listing prerequisite features and p
 ## Status Definitions
 
 - Planned: Defined but not implemented.
+- Not Started: Approved as the next implementation target, but not yet built.
 - Operational: Implemented with real operating data and traceable workflow behavior for the current reference scope.
 - MVP: Implemented enough to demonstrate the intended operating model.
 - Partial: Implemented in part, but important behavior is missing.
@@ -155,7 +165,7 @@ Purpose: Execution evidence and monitoring assurance.
 
 Evidence Types: Execution logs, monitoring results, control results, correlation IDs, runtime events, control-test output.
 
-Current Status: MVP.
+Current Status: Operational.
 
 Target Maturity: Level 4 - Operational.
 
@@ -165,7 +175,7 @@ Purpose: Runtime deployment evidence and container assurance.
 
 Evidence Types: Container metadata, deployment metadata, runtime metadata, image provenance, service health, restart history, deployment drift.
 
-Current Status: Planned.
+Current Status: MVP. Read-only Portainer API collection works for the Travel Brain reference scope when `PORTAINER_ENDPOINT` and `PORTAINER_TOKEN` are available. The connector collects safe deployed-state evidence for `travel-brain-web`, including container name, image name, image tag, deployment timestamp, health status, restart count, logging status, source endpoint, evidence hash, validation, assurance, traceability, and a deployment drift baseline. When the source is unavailable, it creates explicit gap evidence instead of implying deployed-state proof. It deliberately excludes command payloads, environment variable values, secrets, tokens, credentials, mount details, customer content, and sensitive payloads.
 
 Target Maturity: Level 4 - Operational.
 
@@ -175,7 +185,7 @@ Purpose: Database, access, privacy, and data-control assurance.
 
 Evidence Types: Schema metadata, RLS policies, data inventory, query/audit logs, access controls, retention evidence, privacy control evidence.
 
-Current Status: Planned.
+Current Status: Operational. The connector collects real Travel Brain Supabase metadata through a read-only Postgres connection and stores inspectable data-governance evidence artifacts, historical snapshots, drift events, control validation results, and generated findings for warning/failure conditions. It covers schema inventory, table inventory, column inventory, RLS status, policy inventory, role inventory, extension inventory, and database version while excluding row data, customer content, secrets, credentials, tokens, API keys, and sensitive payloads.
 
 Target Maturity: Level 4 - Operational.
 
@@ -183,9 +193,9 @@ Target Maturity: Level 4 - Operational.
 
 Purpose: Agentic tool governance, delegated authority, and execution assurance.
 
-Evidence Types: MCP server inventory, tool registry, tool permissions, tool execution activity, delegated authority checks, denied-action evidence.
+Evidence Types: MCP server inventory, tool registry, tool permissions, authority registry, capability inventory, delegated authority checks, denied-action evidence.
 
-Current Status: Planned.
+Current Status: MVP. The connector collects real Travel Brain MCP metadata from the actual MCP implementation and governance policy sources. It stores inspectable server inventory, tool inventory, tool categories, declared permissions, authority classifications, capability inventory, collection timestamp, version, hash, validation, assurance, and control traceability. It deliberately excludes prompts, customer content, tool inputs, tool outputs, secrets, credentials, and sensitive payloads. It remains below Operational because live scheduled collection, endpoint-level metadata validation, and policy remediation for unclassified write-capable tools remain future work.
 
 Target Maturity: Level 4 - Operational.
 
@@ -193,9 +203,9 @@ Target Maturity: Level 4 - Operational.
 
 Purpose: Human-governed evidence for decisions, approvals, reviews, and committee records.
 
-Evidence Types: Governance decisions, approval records, review notes, committee decisions, exception approvals, production readiness notes.
+Evidence Types: Governance documentation inventory, approval records, review records, committee decisions, ownership records, exception approvals, production readiness notes.
 
-Current Status: Planned.
+Current Status: Partial. The platform now includes the Notion connection model, Travel Brain Notion asset, evidence source registry entries, Notion evidence artifact model, Evidence & Assurance integration, control traceability, explainable assurance, and explicit gap artifacts. Real Notion governance metadata has not been collected because scoped Travel Brain governance content has not been shared with the integration in this environment.
 
 Target Maturity: Level 4 - Operational.
 
@@ -203,9 +213,9 @@ Target Maturity: Level 4 - Operational.
 
 Purpose: Secrets governance without collecting or exposing secret values.
 
-Evidence Types: Secret inventory metadata, owner, storage location, access policy, rotation records, last rotated date, plaintext prohibition evidence.
+Evidence Types: Secret inventory metadata, owner, source system, environment, usage mapping, rotation policy, last rotated date metadata, and plaintext prohibition evidence.
 
-Current Status: Planned.
+Current Status: MVP. The platform collects real Travel Brain secrets metadata from safe source names and declared metadata records across Environment Variables, GitHub Secrets, Supabase Secrets, Portainer Secrets, and Local Secret Stores. It creates Secret Inventory, Rotation Evidence, Ownership Evidence, and Usage Mapping artifacts with collection timestamp, source, validation status, evidence hash, assurance explanation, warning detail, and control traceability. Secret values, tokens, passwords, API key values, certificates, private keys, and connection strings are never read, stored, displayed, logged, hashed, exported, or persisted.
 
 Target Maturity: Level 4 - Operational.
 
@@ -444,11 +454,31 @@ Priority: High
 
 Description: Full-site information architecture redesign based on `docs/UX_ARCHITECTURE_REVIEW.md`. UX Refactor 2 will simplify navigation, remove duplication, consolidate workflows, reduce page sprawl, improve auditor, executive, control-owner, and system-owner workflows, implement hub-based architecture, and reduce global sidebar complexity.
 
-Dependencies: Logs Connector, Portainer Connector, Supabase Connector, MCP Connector, Notion Connector, Secrets Connector.
+Dependencies: Logs Connector, Portainer Connector, Supabase Connector, MCP Connector, Notion Connector, Secrets Connector, Asset Discovery Engine, connector consistency cleanup.
 
-Decision Rationale: UX Refactor 1 improved the proof layer with the Evidence & Assurance Hub, but the full site should not be redesigned around GitHub-only evidence. Complete major evidence domains first, then redesign around real workflows and real evidence across the governed AI system.
+Decision Rationale: UX Refactor 1 improved the proof layer with the Evidence & Assurance Hub, but the full site should not be redesigned around GitHub-only evidence. Complete major evidence domains, run Asset Discovery, normalize connector behavior, then redesign around real workflows and real evidence across the governed AI system.
 
-Future Work: Convert the UX architecture review into implementation phases, define canonical hubs, map legacy routes to retained or redirected destinations, create role-specific journey acceptance tests, and validate the redesigned navigation with Travel Brain once all major evidence domains are represented.
+Future Work: Convert the UX architecture review into implementation phases, define canonical hubs, map legacy routes to retained or redirected destinations, create role-specific journey acceptance tests, and validate the redesigned navigation with Travel Brain once all major evidence domains, discovered assets, and connector patterns are represented.
+
+### Skill Governance
+
+Feature Name: Skill Governance
+
+Phase: Future Phase
+
+Status: Planned
+
+Maturity: Level 1 - Concept
+
+Description: Planned governance capability for AI Skills as first-class assets. Skills are increasingly replacing human SOPs, workflows, playbooks, and procedures. Because Skills may make decisions, execute workflows, influence business outcomes, and encode authority, they should eventually be governed alongside agents, tools, prompts, and models.
+
+Dependencies: AI System Registry, AI Governance, Agentic Governance, Evidence & Assurance Hub, Control Evidence Traceability, connector evidence domains, UX Refactor 2, governance approval workflow, audit trail, usage evidence model.
+
+Governance Principles: Skills require explicit ownership, approvals, reviews, evidence, traceability, version history, authority classification, lifecycle governance, and human accountability. Skill governance should preserve the chain from human procedure to AI Skill to evidence to assurance to governance.
+
+Future Evidence Sources: Skill definition, Skill prompt, Skill workflow, Skill owner, Skill approvals, Skill reviews, Skill usage metadata, and Skill version history.
+
+Future Work: Create a Skill registry, define Skill ownership and lifecycle states, map Skills to controls and risks, capture Skill prompts and workflows, track approvals and reviews, collect Skill usage evidence, classify Skill authority, and add Skill assurance once evidence sources exist.
 
 ### Evidence Repository
 
@@ -540,11 +570,11 @@ Status: MVP
 
 Maturity: Level 3 - MVP
 
-Description: Metadata model for governed AI system assets. Phase 9 MVP includes Tier 1 Travel Brain assets: GitHub, Logs, and Portainer.
+Description: Metadata model for governed AI system assets. Phase 9 MVP includes Travel Brain assets across GitHub, Logs, Portainer, Supabase, MCP, Notion, and the planned Secrets domain.
 
 Dependencies: Asset model, AI systems, seeded Travel Brain assets, Governance Operations dashboard.
 
-Future Work: Add Supabase, MCP, Notion, Secrets, external APIs, asset criticality workflow, asset owner review, and asset drift monitoring.
+Future Work: Add Secrets metadata, external APIs, asset discovery, asset criticality workflow, asset owner review, and asset drift monitoring.
 
 ### Evidence Source Registry
 
@@ -600,15 +630,110 @@ Feature Name: Portainer Connector
 
 Phase: Phase 9
 
+Status: MVP
+
+Maturity: Level 3 - MVP
+
+Description: Read-only Portainer evidence domain for deployed-state reality. The platform models Portainer connections, real deployment evidence artifacts, deployment drift events, Evidence & Assurance deployment views, a deployment evidence viewer, control traceability, and explainable assurance. Travel Brain now collects real `travel-brain-web` deployment evidence from Portainer without storing command payloads, environment variable values, secrets, tokens, credentials, mount details, customer content, or sensitive payloads.
+
+Dependencies: Asset model, EvidenceSource model, PortainerConnection model, DeploymentEvidenceArtifact model, DeploymentDriftEvent model, Travel Brain Portainer asset, Evidence & Assurance Hub, Governance Operations dashboard, Control Evidence Traceability.
+
+Future Work: Add scheduled collection, historical drift comparison against the last collected baseline, multi-container and multi-environment selection, image approval linkage, runtime health checks, deployment freshness findings, production error handling, and reviewer attestations for deployment evidence changes.
+
+### Supabase Connector
+
+Feature Name: Supabase Connector
+
+Phase: Phase 9E
+
+Status: Operational
+
+Maturity: Level 4 - Operational
+
+Description: Read-only Supabase evidence domain for data-governance reality. The platform now collects real Travel Brain Supabase metadata from `TRAVEL_BRAIN_SUPABASE_DB_URL`, retains historical snapshots, detects schema/table/column/RLS/policy/role/extension drift, validates data-governance controls, and generates findings when warning/failure conditions are present. Evidence & Assurance data-governance views, a Supabase evidence viewer, data-governance assurance, and control traceability are available without collecting row data, customer content, secrets, credentials, tokens, API keys, or sensitive payloads.
+
+Dependencies: Asset model, EvidenceSource model, SupabaseConnection model, SupabaseEvidenceArtifact model, SupabaseEvidenceSnapshot model, SupabaseDriftEvent model, SupabaseControlValidation model, read-only Postgres metadata access, Travel Brain Supabase asset, Evidence & Assurance Hub, Governance Operations dashboard, Control Evidence Traceability, Findings.
+
+Future Work: Add scheduled collection, reviewer attestations, remediation workflow for generated findings, richer query/audit log evidence, approved baseline management, and production-grade retention policy for Supabase evidence snapshots.
+
+### MCP Connector
+
+Feature Name: MCP Connector
+
+Phase: Phase 9F
+
+Status: MVP
+
+Maturity: Level 3 - MVP
+
+Description: Evidence domain for actual agent capability. The connector collects real Travel Brain MCP metadata from the actual MCP implementation and governance policy sources, producing inspectable evidence artifacts for server inventory, tool registry, tool permissions, authority registry, and capability inventory. It preserves collection timestamp, source, version, hash, validation, assurance, and control traceability without collecting prompts, customer content, tool inputs, tool outputs, secrets, credentials, or sensitive payloads.
+
+Dependencies: Asset Inventory, Evidence Source Registry, Agentic Governance, Tool Permissions, Delegated Authority Framework, Evidence & Assurance Hub, Control Evidence Traceability, MCP evidence artifact model.
+
+Future Work: Review unclassified write-capable MCP tools, update `governance/tool-policy.yaml`, add live endpoint-level metadata validation where safe, add scheduled freshness collection, add MCP drift detection, and mature the connector toward Operational after repeated successful collections and reviewer attestations.
+
+### Notion Governance Connector
+
+Feature Name: Notion Governance Connector
+
+Phase: Phase 9G
+
 Status: Partial
 
 Maturity: Level 2 - Prototype
 
-Description: Metadata-only connector design for container metadata, deployment metadata, and runtime metadata.
+Description: Partial human-governance evidence domain for governance decisions, review notes, approval records, committee decisions, ownership evidence, production readiness evidence, and other reviewer-owned governance artifacts. The connector supports scoped Notion metadata collection when configured, but the current Travel Brain run creates explicit gap artifacts because no scoped Notion token, database ID, or page ID is available.
 
-Dependencies: Asset model, EvidenceSource model, Travel Brain Portainer asset, Governance Operations dashboard.
+Dependencies: Asset Inventory, Evidence Source Registry, Evidence Repository, Auditor Workspace, Governance Committee workflows, Evidence & Assurance Hub, Control Evidence Traceability, scoped Notion integration token, shared Travel Brain Notion governance page or database.
 
-Future Work: Build Portainer API integration, deployment provenance, container configuration snapshots, runtime health checks, and drift detection.
+Future Work: Configure scoped Travel Brain Notion access, collect real page/database metadata, validate approval/review/committee/ownership fields, preserve reviewer and approver context, add scheduled freshness collection, add Notion governance drift review, and move the connector to MVP only after real governance metadata is collected.
+
+### Secrets Metadata Connector
+
+Feature Name: Secrets Metadata Connector
+
+Phase: Phase 9H
+
+Status: MVP
+
+Maturity: Level 3 - MVP
+
+Description: Metadata-only secrets governance evidence domain. The connector collects Travel Brain secret identifiers, source systems, environment, owners, rotation metadata, usage mappings, associated AI system, collection timestamp, source, validation status, evidence hash, assurance explanation, warning detail, and control traceability while strictly prohibiting secret values, tokens, passwords, API key values, certificates, private keys, and connection strings.
+
+Dependencies: Asset Inventory, Evidence Source Registry, Secrets governance policy, Evidence & Assurance Hub, Control Evidence Traceability, security review guardrails.
+
+Future Work: Replace declared metadata fallbacks with scheduled read-only metadata collection where source APIs expose safe names, improve owner and rotation metadata completeness, resolve stale or unknown rotation warnings, add connector consistency cleanup, and move the connector toward Operational only after metadata collection is scheduled and reviewed.
+
+### Asset Discovery Engine
+
+Feature Name: Asset Discovery Engine
+
+Phase: Phase 9X
+
+Status: MVP
+
+Maturity: Level 3 - MVP
+
+Description: Governed discovery capability for finding AI-system assets humans
+may forget to declare. The engine creates Travel Brain discovery runs, sources,
+and findings by comparing `AI Governance.yaml` against repository files, GitHub
+workflows, configuration files, documentation, Portainer metadata, Supabase
+metadata, MCP metadata, Notion references, environment variable names, and
+Secrets metadata. It classifies known, unknown, untracked, orphaned, and missing
+assets with source, source file, source asset, evidence, discovery rule, reason,
+confidence score, confidence level, validation status, status, and recommended
+action. Invalid findings remain visible for review but are excluded from
+inventory completeness and known-vs-discovered counts.
+
+Dependencies: Asset Inventory, Evidence Source Registry, AI Governance Manifest,
+GitHub Connector, Logs Connector, Portainer Connector, Supabase Connector, MCP
+Connector, Notion Governance Connector, Secrets Metadata Connector, control
+traceability, reviewer workflow.
+
+Future Work: Add scheduled discovery runs, reviewer assignment, inventory update
+workflow, richer source adapters, discovered asset criticality workflow,
+historical discovery drift, automated recommendations for evidence source
+creation, and reviewer adjudication for warning-level findings.
 
 ### Governance Operations Dashboard
 
@@ -620,11 +745,27 @@ Status: MVP
 
 Maturity: Level 3 - MVP
 
-Description: Dashboard showing assets, evidence sources, validation status, freshness status, connector health, and assurance scores for Travel Brain metadata-only Tier 1 operations.
+Description: Dashboard showing assets, evidence sources, validation status, freshness status, connector health, assurance scores, GitHub artifacts, runtime evidence, deployment evidence, and Supabase data-governance evidence or gaps for Travel Brain operations.
 
 Dependencies: Asset model, EvidenceSource model, assurance score calculation, sidebar navigation, seeded Travel Brain assets.
 
 Future Work: Add live connector health, source error states, freshness schedules, asset drift, manifest drift, and drill-downs from assurance score to evidence objects.
+
+### Platform Review Agent
+
+Feature Name: Platform Review Agent
+
+Phase: Phase 9D.5
+
+Status: Operational
+
+Maturity: Level 4 - Operational
+
+Description: Internal self-assessment and review-package workspace at `/platform-review`, `/platform-review/package`, and `/platform-review/export` that inventories routes, feature maturity, navigation structure, duplicate destinations, evidence maturity, connector status, governance status, screenshot planning, architecture drift, open issues, and ChatGPT-ready review-package content. It reads the current app route tree, current navigation models, `FEATURE_REGISTRY.md`, Evidence & Assurance operating data, `PROJECT_OPERATING_MODEL.md`, and `UX_ARCHITECTURE_REVIEW.md`, and maintains `docs/PLATFORM_REVIEW_PACKAGE.md` as the canonical single-file review artifact.
+
+Dependencies: App route tree, shared sidebar navigation model, Evidence & Assurance secondary navigation model, Feature Registry documentation, Governance Operations data helper, Evidence Source Registry, EvidenceArtifact, RuntimeEvidenceArtifact, DeploymentEvidenceArtifact, EvidenceHealth, findings, exceptions, Project Operating Model, UX Architecture Review, Platform Review Package document.
+
+Future Work: Add automated screenshot capture, `platform-review.zip` generation, scheduled review runs, route ownership metadata, richer duplicate workflow detection, feature-to-route mapping, source-code drift checks, and issue history.
 
 ### Evidence Traceability
 

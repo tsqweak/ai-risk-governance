@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Bot, BrainCircuit, FileCheck2, KeyRound, ShieldCheck, UserCheck, Wrench } from "lucide-react";
 import { getAiSystemAiGovernance } from "../../../data";
@@ -80,10 +81,52 @@ export default async function SystemAiGovernancePage({ params }: { params: Promi
         </div>
       </Section>
 
+      <Section title="AI governance assurance">
+        <div className="grid gap-4 lg:grid-cols-3">
+          <AssuranceStory
+            title="Models"
+            proof={`${system.aiModels.length} models, ${system.aiModels.filter((model) => model.validationStatus === "APPROVED").length} approved`}
+            reviewed={`Validated by model owners; latest validation ${formatDate(system.aiModels[0]?.validationDate)}`}
+            approved={`${system.lifecycleApprovals.filter((approval) => approval.status === "APPROVED").length} lifecycle approvals`}
+            monitored={`${system.testRuns.filter((run) => run.controlTest.testId === "CCM-011").length} AI governance monitoring runs`}
+          />
+          <AssuranceStory
+            title="Prompts"
+            proof={`${system.promptAssets.length} prompts with version history`}
+            reviewed={system.promptAssets.flatMap((prompt) => prompt.versions).map((version) => `${version.version} by ${version.modifiedBy}`).join(", ") || "No prompt versions"}
+            approved={`${system.promptAssets.filter((prompt) => prompt.approvalStatus === "APPROVED").length} approved prompts`}
+            monitored="CCM-011 validates approved AI governance records"
+          />
+          <AssuranceStory
+            title="Oversight, agents, and tools"
+            proof={`${system.agents.length} agents, ${system.toolPermissions.length} tool permissions, oversight ${system.humanOversight?.oversightRequired ? "defined" : "missing"}`}
+            reviewed={`Evidence objects: ${system.evidenceObjects.length}`}
+            approved={`${system.toolPermissions.filter((permission) => permission.approved).length} approved permissions`}
+            monitored={`${system.aiGovernanceFindings.length} linked governance findings`}
+          />
+        </div>
+      </Section>
+
       <Section title="Prompt Inventory">
         <div className="grid gap-3">
           {system.promptAssets.map((prompt) => (
             <article key={prompt.id} className="rounded-md border border-line bg-white p-4">
+              {(() => {
+                const promptArtifact = system.promptArtifacts.find((artifact) => artifact.path.toLowerCase().includes("prompt"));
+                return promptArtifact ? (
+                  <div className="mb-4 rounded border border-line bg-panel p-3">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">Actual Prompt Artifact</div>
+                        <div className="mt-1 text-sm font-semibold text-ink">{promptArtifact.name}</div>
+                        <div className="mt-1 text-xs text-slate-500">{promptArtifact.path} · {promptArtifact.version}</div>
+                      </div>
+                      <Link href={`/evidence-artifacts/${promptArtifact.artifactId}`} className="text-xs font-semibold text-brand hover:text-blue-700">Open artifact</Link>
+                    </div>
+                    <pre className="mt-3 max-h-52 overflow-auto rounded border border-line bg-white p-3 text-xs leading-5 text-slate-700">{promptArtifact.content}</pre>
+                  </div>
+                ) : null;
+              })()}
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <h2 className="text-sm font-semibold text-ink">{prompt.name}</h2>
@@ -102,6 +145,37 @@ export default async function SystemAiGovernancePage({ params }: { params: Promi
               </div>
             </article>
           ))}
+        </div>
+      </Section>
+
+      <Section title="AI Governance Manifest Artifact">
+        <div className="grid gap-4 lg:grid-cols-[2fr_1fr]">
+          <div className="rounded-md border border-line bg-white p-4">
+            {system.manifestArtifacts.length > 0 ? (
+              system.manifestArtifacts.map((artifact) => (
+                <div key={artifact.id}>
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                    <div>
+                      <h2 className="text-sm font-semibold text-ink">{artifact.name}</h2>
+                      <p className="mt-1 text-xs text-slate-500">{artifact.path} · {artifact.version} · {humanize(artifact.validationStatus)}</p>
+                    </div>
+                    <Link href={`/evidence-artifacts/${artifact.artifactId}`} className="text-xs font-semibold text-brand hover:text-blue-700">Open artifact</Link>
+                  </div>
+                  <pre className="mt-4 max-h-80 overflow-auto rounded border border-line bg-panel p-3 text-xs leading-5 text-slate-700">{artifact.content}</pre>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-slate-700">No collected manifest artifact exists.</p>
+            )}
+          </div>
+          <div className="rounded-md border border-line bg-white p-4">
+            <h2 className="text-sm font-semibold text-ink">Manifest Integration</h2>
+            <div className="mt-3 grid gap-3">
+              <Fact label="Assets" value={`${system.assets.length} governed assets`} />
+              <Fact label="Evidence Sources" value={`${system.assets.flatMap((asset) => asset.evidenceSources).length} linked sources`} />
+              <Fact label="Risk Profile" value={system.assessment?.overallRiskTier ? humanize(system.assessment.overallRiskTier) : "Not assessed"} />
+            </div>
+          </div>
         </div>
       </Section>
 
@@ -194,6 +268,21 @@ export default async function SystemAiGovernancePage({ params }: { params: Promi
         </div>
       </Section>
     </>
+  );
+}
+
+function AssuranceStory({ title, proof, reviewed, approved, monitored }: { title: string; proof: string; reviewed: string; approved: string; monitored: string }) {
+  return (
+    <article className="rounded-md border border-line bg-white p-4">
+      <h2 className="text-sm font-semibold text-ink">{title}</h2>
+      <div className="mt-3 grid gap-2 text-sm leading-6 text-slate-700">
+        <p><span className="font-semibold text-ink">Evidence:</span> {proof}</p>
+        <p><span className="font-semibold text-ink">Review records:</span> {reviewed}</p>
+        <p><span className="font-semibold text-ink">Approval records:</span> {approved}</p>
+        <p><span className="font-semibold text-ink">Monitoring:</span> {monitored}</p>
+        <Link href="#model-inventory" className="text-xs font-semibold text-brand hover:text-blue-700">Travel Brain assurance pattern</Link>
+      </div>
+    </article>
   );
 }
 

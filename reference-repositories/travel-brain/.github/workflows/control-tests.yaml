@@ -1,0 +1,16 @@
+name: Travel Brain Control Tests
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+jobs:
+  control-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate AI Governance Manifest
+        run: npm run governance:manifest:check
+      - name: Run Prompt Policy Checks
+        run: npm run governance:prompt:check
+      - name: Publish Monitoring Result
+        run: npm run governance:monitoring:export

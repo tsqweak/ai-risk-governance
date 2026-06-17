@@ -270,6 +270,13 @@ A mature connector should support collection, validation, assurance, traceabilit
 freshness, and explainability. Starting many metadata-only connectors creates
 governance theater.
 
+Lesson: Discovery should find assets humans forget.
+
+Asset discovery should challenge the declared manifest and surface overlooked
+repositories, databases, containers, MCP servers, logs, documentation, policies,
+secrets metadata, and external services. Discovery enriches the governed object
+graph; it does not replace accountable human review.
+
 Lesson: GitHub proves design intent.
 
 GitHub artifacts such as manifests, prompts, policies, and workflows show how
@@ -322,6 +329,17 @@ Non-engineers should be able to follow:
 
 `Requirement -> Control -> Implementation -> Evidence -> Monitoring -> Assurance Story`
 
+Lesson: Skills are future governed assets.
+
+Skills are increasingly becoming AI versions of human SOPs, workflows,
+playbooks, and procedures. Future governance must treat Skills as owned,
+versioned, approved, evidenced, and traceable assets.
+
+Lesson: Governance should operationalize, not document.
+
+Documentation is useful only when it leads to controlled operation, evidence
+collection, assurance, review, and accountable decisions.
+
 ## 7. Current Architecture
 
 Use `docs/FEATURE_REGISTRY.md` as the source of truth for current status and
@@ -345,6 +363,7 @@ Operational capabilities include:
 
 - GitHub Connector
 - Logs Connector
+- Supabase Connector
 
 MVP capabilities include:
 
@@ -361,18 +380,18 @@ MVP capabilities include:
 - Verifiable Evidence
 - Evidence Automation
 - Evidence & Assurance Hub
+- Portainer Connector
+- MCP Connector
 
 Partial capabilities include:
 
-- Portainer Connector
+- Notion Governance Connector
 
 Planned capabilities include:
 
-- Supabase Connector
-- MCP Connector
-- Notion Governance Connector
 - Secrets Metadata Connector
 - UX Refactor 2 - Full Site IA Redesign
+- Skill Governance
 
 ## 8. Connector Strategy
 
@@ -415,8 +434,21 @@ Connector maturity requires:
 8. Freshness, drift, or health monitoring where applicable
 
 GitHub is the reference connector for design-intent evidence. Logs are the
-reference connector for operational-runtime evidence. Portainer is the next
-target for deployed-state evidence.
+reference connector for operational-runtime evidence. Supabase is the reference
+connector for data-governance evidence. Portainer and MCP are MVP reference
+patterns that need consistency cleanup before they can be promoted. Notion is
+partial until scoped human-governance evidence can be collected. Secrets is the
+next connector target and must collect metadata only, never secret values.
+
+Current connector status:
+
+- GitHub Connector: Operational
+- Logs Connector: Operational
+- Supabase Connector: Operational
+- Portainer Connector: MVP
+- MCP Connector: MVP
+- Notion Connector: Partial
+- Secrets Connector: Not Started
 
 ## 9. UX Refactor Strategy
 
@@ -455,41 +487,50 @@ owners.
 
 Current phase:
 
-`Phase 9D - Portainer Connector`
+`Phase 9H - Secrets Metadata Connector`
 
 Current objective:
 
-Move Portainer from metadata-only source registration to collected deployment
-and container runtime evidence artifacts.
+Create a secrets metadata evidence domain that proves inventory, ownership,
+storage location, access policy, rotation records, and plaintext prohibition
+without collecting or exposing secret values.
 
 Current success criteria:
 
-- Portainer source is connected or connector-ready with explicit gaps.
-- Deployment and container evidence artifacts are collected or the missing source
-  is documented.
-- Evidence is validated.
-- Assurance is explainable.
-- Evidence is traceable to controls and AI systems.
-- Sensitive configuration, secrets, tokens, and credentials are not collected.
-- Feature maturity is updated only when evidence is inspectable and useful.
+- Secret inventory metadata is represented as governed asset evidence.
+- Secret values, tokens, credentials, customer content, personal data, and
+  sensitive payloads are never collected.
+- Storage locations, owners, rotation dates, access policy metadata, and
+  plaintext-prohibition evidence are inspectable.
+- Evidence is validated, freshness-aware, and attributable to a source.
+- Assurance is explainable and mapped to controls, risks, and AI systems.
+- Missing sources produce explicit gap artifacts rather than invented evidence.
 
 Current risks:
 
-- Stopping at metadata instead of inspectable evidence.
-- Adding new navigation instead of integrating with Evidence & Assurance.
-- Creating inconsistent evidence patterns across GitHub, Logs, and Portainer.
-- Collecting sensitive operational configuration.
-- Marking the connector mature before collection, validation, assurance, and
-  traceability exist.
+- Accidentally collecting secret values or sensitive configuration.
+- Treating metadata as sufficient evidence without validation and assurance.
+- Creating a connector pattern that diverges from GitHub, Logs, Supabase,
+  Portainer, MCP, and Notion evidence workflows.
+- Marking the connector mature before collection, validation, assurance,
+  freshness, and traceability exist.
 
 Current open questions:
 
-- What real Portainer endpoint or export is available?
-- What read-only access pattern is acceptable?
-- Which deployment and runtime metadata is safe to collect?
-- Which controls depend on Portainer evidence?
-- What freshness threshold should apply to deployment evidence?
-- Should drift create findings immediately or remain review-only at first?
+- Which source system should provide Travel Brain secrets metadata?
+- What metadata can be collected safely without exposing values?
+- Which controls require rotation, ownership, storage, or access-policy proof?
+- What freshness threshold should apply to secrets metadata?
+- Should stale rotation metadata generate findings immediately or remain
+  reviewer-attested at first?
+
+Current roadmap sequence:
+
+1. Phase 9H - Secrets Metadata Connector
+2. Phase 9X - Asset Discovery Engine
+3. Connector consistency cleanup
+4. UX Refactor 2 - Full Site IA Redesign
+5. Phase 10 - Analytics & Trends
 
 ## 11. Codex Guardrails
 
@@ -566,4 +607,3 @@ The enterprise operating story is:
 
 The project must continue evolving from documentation to operations, from status
 to assurance, and from seeded examples to real evidence.
-

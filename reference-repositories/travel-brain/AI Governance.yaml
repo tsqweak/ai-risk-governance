@@ -1,0 +1,47 @@
+system:
+  name: Travel Brain
+  description: AI travel recommendation assistant for customer travel planning.
+  lifecycle_stage: Production
+  environment: Production
+  business_purpose: Provide governed travel recommendations and planning support.
+
+owners:
+  business_owner: Sarah Chen
+  technology_owner: Michael Thompson
+  risk_owner: Russell
+  executive_sponsor: David Kim
+
+ai:
+  type: Assistant
+  agentic_level: 1
+  authority_level: 1
+  customer_facing: true
+  autonomous_action: false
+  financial_transaction: false
+
+assets:
+  repositories:
+    - name: GitHub - Travel Brain
+      repository_type: GitHub
+      location: https://github.com/local-reference/travel-brain
+  logs:
+    - name: Recommendation Activity Logs
+      location: logs/recommendations/*.jsonl
+
+evidence_sources:
+  prompts:
+    - asset: GitHub - Travel Brain
+      location: prompts/travel-planner.md
+  policies:
+    - asset: GitHub - Travel Brain
+      location: governance/tool-policy.yaml
+  workflows:
+    - asset: GitHub - Travel Brain
+      location: .github/workflows/control-tests.yaml
+
+risk:
+  tier: Medium
+  domains:
+    - Hallucination Risk
+    - Privacy Risk
+    - Tool Misuse Risk

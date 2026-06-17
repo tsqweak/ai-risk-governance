@@ -1,0 +1,15 @@
+policy_id: TB-TOOL-POLICY-001
+system: Travel Brain
+owner: Michael Thompson
+approval_reference: TB-PROD-APPROVAL-2026-001
+approved_tools:
+  - name: Weather API
+    permission: Read
+  - name: Destination Content API
+    permission: Read
+denied_tools:
+  - name: Booking API
+    reason: Travel Brain is recommendation-only.
+  - name: Calendar Write
+    reason: No write authority approved.
+review_cadence: Monthly

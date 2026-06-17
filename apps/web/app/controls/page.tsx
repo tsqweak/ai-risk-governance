@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getControls } from "../data";
 import { humanize } from "../components/format";
 import { Section } from "../components/ui";
@@ -16,7 +17,7 @@ export default async function ControlsPage() {
       <Section title="Controls">
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {controls.map((control) => (
-            <article key={control.id} className="rounded-md border border-line bg-white p-5">
+            <Link key={control.id} href={`/controls/${control.code}`} className="rounded-md border border-line bg-white p-5 hover:bg-panel">
               <div className="text-xs font-semibold uppercase tracking-wide text-brand">{control.code}</div>
               <h2 className="mt-2 text-base font-semibold text-ink">{control.title}</h2>
               <p className="mt-2 text-sm leading-6 text-slate-700">{control.description}</p>
@@ -25,7 +26,7 @@ export default async function ControlsPage() {
                 <span className="rounded bg-panel px-2 py-1">{control.ownerRole}</span>
                 <span className="rounded bg-panel px-2 py-1">{control.testingFrequency}</span>
               </div>
-            </article>
+            </Link>
           ))}
         </div>
       </Section>

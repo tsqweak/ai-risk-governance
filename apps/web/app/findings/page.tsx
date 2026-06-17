@@ -1,7 +1,7 @@
 import { AlertTriangle, FileWarning, ListChecks, ShieldAlert } from "lucide-react";
 import { getFindingsDashboard } from "../data";
 import { formatDate } from "../components/format";
-import { Metric, Section, StatusBadge } from "../components/ui";
+import { Breadcrumbs, Metric, Section, StatusBadge, TaskLink, WorkflowContext } from "../components/ui";
 
 export const dynamic = "force-dynamic";
 
@@ -13,11 +13,19 @@ export default async function FindingsPage() {
   return (
     <>
       <header>
+        <Breadcrumbs items={[{ label: "Governance", href: "/governance" }, { label: "Findings" }]} />
         <p className="text-sm font-medium text-brand">Findings</p>
         <h1 className="mt-1 text-3xl font-semibold text-ink">Monitoring findings dashboard</h1>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
           Risk-focused view of open findings by severity, AI system, regulatory theme, and trend.
         </p>
+        <WorkflowContext
+          title="Findings action model"
+          why="Findings are durable governance work items created when monitoring, evidence, or control validation indicates a control may not be operating."
+          next="Review the impact, owner, due date, evidence used, and recommended action; then remediate the control, request evidence, review an exception, or accept risk where appropriate."
+          backHref="/governance#control-owner-queue"
+          backLabel="Back to Control Owner Queue"
+        />
       </header>
 
       <div className="mt-6 grid gap-0 sm:grid-cols-4">
@@ -49,7 +57,7 @@ export default async function FindingsPage() {
       <Section title="Open finding register">
         <div className="rounded-md border border-line bg-white">
           {findings.map((finding) => (
-            <div key={finding.id} className="border-b border-line p-4 last:border-0">
+            <div id={`finding-${finding.findingId}`} key={finding.id} className="scroll-mt-24 border-b border-line p-4 last:border-0">
               <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <div className="text-sm font-semibold text-ink">{finding.findingId}</div>
@@ -58,11 +66,36 @@ export default async function FindingsPage() {
                 <div className="flex gap-2"><StatusBadge status={finding.severity} /><StatusBadge status={finding.status} /></div>
               </div>
               <p className="mt-3 text-sm leading-6 text-slate-700">{finding.description}</p>
+              <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                <ActionFact label="Why this exists" value={finding.controlTest.title} />
+                <ActionFact label="Evidence used" value={finding.controlTest.description} />
+                <ActionFact label="Impact" value={finding.controlTest.whyItMatters} />
+                <ActionFact label="Owner" value={finding.owner} />
+              </div>
+              <div className="mt-4 rounded border border-line bg-panel p-3 text-sm leading-6 text-slate-700">
+                <span className="font-semibold text-ink">Recommended action:</span> Review the failed control context, update supporting evidence or remediation notes, and document exception or risk acceptance if remediation cannot complete by {formatDate(finding.remediationTargetDate)}.
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                <TaskLink href={`/systems/${finding.aiSystem.slug}/monitoring#finding-${finding.findingId}`}>Review Finding</TaskLink>
+                <TaskLink href={`/systems/${finding.aiSystem.slug}/controls`}>Remediate Control</TaskLink>
+                <TaskLink href={`/systems/${finding.aiSystem.slug}/monitoring#finding-${finding.findingId}`}>Review Test Evidence</TaskLink>
+                <TaskLink href="/exceptions">Review Exception</TaskLink>
+                <TaskLink href={`/systems/${finding.aiSystem.slug}/risk`}>Accept Risk</TaskLink>
+              </div>
             </div>
           ))}
         </div>
       </Section>
     </>
+  );
+}
+
+function ActionFact({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded border border-line bg-panel p-3">
+      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</div>
+      <div className="mt-1 text-sm leading-6 text-slate-700">{value}</div>
+    </div>
   );
 }
 

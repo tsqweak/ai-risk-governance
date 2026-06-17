@@ -3,6 +3,12 @@
 Current release: v0.6.0
 Documentation baseline: v0.6.1
 
+Current roadmap sequence:
+
+1. Connector consistency cleanup
+2. UX Refactor 2 - Full Site IA Redesign
+3. Phase 10 - Portfolio Analytics & Trends
+
 ## Vision
 
 AI Risk Governance is a bank-grade governance platform for the full lifecycle of AI systems. It is designed to help IT Risk, Internal Audit, Compliance, AI Governance Committees, CIO/CRO leadership, and regulators understand, evidence, and monitor AI risk in a way that extends traditional governance patterns into AI-specific and agentic AI governance.
@@ -137,17 +143,79 @@ Planned capabilities:
 - Assurance Scoring
 - Governance Operations Dashboard
 
+### Phase 9H MVP - Secrets Metadata Connector
+
+Status: MVP
+
+Phase 9H adds secrets governance evidence without collecting secrets, tokens,
+credentials, or sensitive values. The connector collects metadata that helps
+prove whether secrets are inventoried, owned, mapped to source systems and
+usage, governed by rotation policy, associated with Travel Brain, and prohibited
+from plaintext collection.
+
+Implemented MVP capabilities:
+
+- Secret inventory metadata.
+- Secret owner and accountable team metadata.
+- Source system and environment metadata.
+- Usage mapping and associated AI-system metadata.
+- Rotation date and rotation cadence evidence.
+- Plaintext prohibition evidence.
+- Validation and assurance rules that never require secret values.
+- Control traceability for security, auditability, operational resilience, and
+  AI-system governance controls.
+
+Remaining maturation work: scheduled source metadata collection, richer
+read-only source integrations where APIs expose safe names, stale rotation
+remediation, missing ownership remediation, and connector consistency cleanup.
+
+### Phase 9X MVP - Asset Discovery Engine
+
+Status: MVP
+
+Phase 9X turns asset discovery into a governed operating capability. The engine
+compares declared system boundaries against discovered assets and surfaces
+repositories, databases, containers, MCP servers, logs, documentation, policies,
+secrets metadata, external services, and other assets that humans may forget to
+declare.
+
+Implemented MVP capabilities:
+
+- Cross-source asset discovery.
+- Manifest-to-reality comparison.
+- Undeclared asset detection.
+- Missing evidence source detection.
+- Discovery findings and review status.
+- Known, unknown, untracked, orphaned, and missing asset classification.
+- Explainable source, evidence, reason, confidence, and recommended action.
+- Travel Brain validation against repository, workflow, connector, documentation,
+  runtime, and metadata sources.
+
+Remaining maturation work: scheduled discovery runs, reviewer assignment,
+inventory update workflow, richer source adapters, asset criticality workflow,
+historical discovery drift, and automated recommendations for evidence source
+creation.
+
+### Connector Consistency Cleanup Planned Work
+
+Status: Current Focus
+
+After Secrets and Asset Discovery, the connector layer should be normalized so
+GitHub, Logs, Supabase, Portainer, MCP, Notion, and Secrets follow consistent
+patterns for collection, validation, assurance, freshness, drift, traceability,
+gap artifacts, and reviewer follow-up.
+
 ## UX Refactor 2 Planned Work - Full Site IA Redesign
 
 Status: Planned
 
 Priority: High
 
-UX Refactor 2 will implement the long-term information architecture blueprint in `docs/UX_ARCHITECTURE_REVIEW.md`. It should occur after the major evidence domains are implemented so the redesign reflects real governance workflows rather than only GitHub-backed evidence.
+UX Refactor 2 will implement the long-term information architecture blueprint in `docs/UX_ARCHITECTURE_REVIEW.md`. It should occur after the major evidence domains, Asset Discovery Engine, and connector consistency cleanup are implemented so the redesign reflects real governance workflows rather than only GitHub-backed evidence.
 
 Dependency:
 
-Complete evidence domains first:
+Complete evidence domains and connector consistency first:
 
 - GitHub
 - Logs
@@ -156,6 +224,8 @@ Complete evidence domains first:
 - MCP
 - Notion
 - Secrets
+- Asset Discovery Engine
+- Connector consistency cleanup
 
 Planned objectives:
 
@@ -167,7 +237,32 @@ Planned objectives:
 
 Decision rationale:
 
-Do not redesign around GitHub-only evidence. Complete the major evidence domains first, then redesign around real workflows, real evidence, and the way auditors, executives, control owners, and system owners actually move through the platform.
+Do not redesign around GitHub-only evidence. Complete the major evidence domains, run Asset Discovery, normalize connector behavior, then redesign around real workflows, real evidence, and the way auditors, executives, control owners, and system owners actually move through the platform.
+
+## Future Phase Planned Work - Skill Governance
+
+Skill Governance is a future governance capability that should be sequenced after completion of the major evidence domains and UX Refactor 2.
+
+Skills are increasingly replacing human SOPs, workflows, playbooks, and procedures. In the governance model, Skills should eventually be governed as first-class assets alongside agents, tools, prompts, and models because they may make decisions, execute workflows, influence business outcomes, and encode authority.
+
+Planned capabilities:
+
+- Skill registry and ownership model.
+- Skill approval and review workflow.
+- Skill version history and lifecycle tracking.
+- Skill prompt and workflow traceability.
+- Skill authority classification.
+- Skill usage evidence and monitoring evidence.
+- Skill-to-control and Skill-to-risk mapping.
+- Skill evidence sources for definitions, prompts, workflows, owners, approvals, reviews, usage metadata, and version history.
+
+Governance principle:
+
+```text
+Human SOP -> AI Skill -> Evidence -> Assurance -> Governance
+```
+
+Skill Governance should preserve human accountability and auditor traceability even when a skill automates a previously human-owned procedure.
 
 ## Phase 10 Planned Work - Portfolio Analytics & Trends
 

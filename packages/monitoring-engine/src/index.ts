@@ -122,6 +122,24 @@ export const controlTestDefinitions = [
     aiGovernanceInterpretation: "Agentic AI needs control over what actions can be taken, which tools can be used, who approves high-impact actions, and how execution is logged.",
     whyItMatters: "Autonomous or semi-autonomous agents can create real customer, financial, recordkeeping, and operational impact if authority and tool use are not bounded.",
     severityIfFailed: FindingSeverity.HIGH
+  },
+  {
+    testId: "CCM-013",
+    title: "AI Lifecycle Stage Gates Complete",
+    description: "Confirms AI lifecycle stage approvals, gate controls, production authorization, and review currency are complete.",
+    traditionalGovernanceConcept: "Project lifecycle governance, stage gates, release approval, and periodic review.",
+    aiGovernanceInterpretation: "AI systems need governed movement from intake through development, testing, pilot, production, and retirement with evidence-backed approvals at each gate.",
+    whyItMatters: "Lifecycle gaps can allow unapproved AI systems to advance to production, operate with stale reviews, or retire without preserving evidence and accountability.",
+    severityIfFailed: FindingSeverity.HIGH
+  },
+  {
+    testId: "CCM-014",
+    title: "Governance Engineering Implemented",
+    description: "Confirms governance controls are mapped to technical implementations, implementation evidence, monitoring methods, and validation status.",
+    traditionalGovernanceConcept: "Control implementation traceability and operating effectiveness.",
+    aiGovernanceInterpretation: "AI controls need demonstrable technical implementation such as policy engines, approval gates, logging, access enforcement, monitoring, and kill switches.",
+    whyItMatters: "A control objective is not enough for audit or supervision unless the platform can show how the control is implemented, evidenced, monitored, and validated.",
+    severityIfFailed: FindingSeverity.HIGH
   }
 ] as const;
 
@@ -160,7 +178,16 @@ export async function runMonitoring(prisma: PrismaClient, executionDate = new Da
       governedTools: true,
       agentActions: true,
       executionLogs: { include: { action: true, approvalWorkflow: true } },
-      killSwitch: true
+      killSwitch: true,
+      lifecycleRecords: true,
+      lifecycleApprovals: true,
+      controlImplementations: {
+        include: {
+          primaryControl: true,
+          controlLinks: { include: { control: true } },
+          evidence: true
+        }
+      }
     },
     orderBy: { name: "asc" }
   });
@@ -191,7 +218,7 @@ export async function runMonitoring(prisma: PrismaClient, executionDate = new Da
             controlTestId: test.id,
             title: `${test.title} failed for ${system.name}`,
             description: evaluation.resultDetails,
-            severity: test.severityIfFailed,
+            severity: evaluation.severity ?? test.severityIfFailed,
             status: FindingStatus.OPEN,
             createdDate: executionDate,
             remediationTargetDate: addDays(executionDate, remediationDays(test.severityIfFailed)),
@@ -294,9 +321,185 @@ function evaluate(testId: string, system: MonitoringSystem, executionDate: Date)
       return evaluateAiGovernanceProfile(system);
     case "CCM-012":
       return evaluateAgenticGovernance(system, executionDate);
+    case "CCM-013":
+      return evaluateLifecycleGovernance(system, executionDate);
+    case "CCM-014":
+      return evaluateGovernanceEngineering(system);
     default:
       return warning(`No executable check is implemented for ${testId}.`, `test:${testId}`);
   }
+}
+
+const governanceEngineeringRequiredControls = new Set([
+  "AI-GOV-002",
+  "AI-GOV-004",
+  "AI-GOV-006",
+  "AI-GOV-007",
+  "AI-AGENT-002",
+  "AI-AGENT-003",
+  "AI-AGENT-006",
+  "AI-AGENT-007",
+  "AI-AGENT-009",
+  "AI-LC-006"
+]);
+
+function evaluateGovernanceEngineering(system: MonitoringSystem) {
+  const gaps: string[] = [];
+  const severityCandidates: FindingSeverity[] = [];
+  const implementationsByControl = new Map<string, typeof system.controlImplementations>();
+
+  for (const implementation of system.controlImplementations) {
+    for (const code of new Set([
+      implementation.primaryControl.code,
+      ...implementation.controlLinks.map((link) => link.control.code)
+    ])) {
+      implementationsByControl.set(code, [...(implementationsByControl.get(code) ?? []), implementation]);
+    }
+  }
+
+  const highestAgenticLevel = Math.max(0, ...system.agents.map((agent) => agent.agenticLevel));
+  const requiredMappings = system.systemControls.filter((mapping) =>
+    isGovernanceEngineeringRequired(mapping.control.code, system.lifecycleStatus, highestAgenticLevel)
+  );
+
+  for (const mapping of requiredMappings) {
+    const implementations = implementationsByControl.get(mapping.control.code) ?? [];
+    if (implementations.length === 0) {
+      gaps.push(`control has no implementation: ${mapping.control.code}`);
+      severityCandidates.push(severityForControl(mapping.control.code, mapping.control.category));
+    }
+  }
+
+  for (const implementation of system.controlImplementations) {
+    if (implementation.status !== "VALIDATED") {
+      gaps.push(`implementation not validated: ${implementation.implementationId}`);
+      severityCandidates.push(severityForControl(implementation.primaryControl.code, implementation.primaryControl.category));
+    }
+    if (implementation.evidence.length === 0) {
+      gaps.push(`required evidence missing: ${implementation.implementationId}`);
+      severityCandidates.push(severityForControl(implementation.primaryControl.code, implementation.primaryControl.category));
+    }
+    if (implementation.implementationType === "Runtime Control" && !isRuntimeControlMonitored(implementation)) {
+      gaps.push(`runtime control not monitored: ${implementation.implementationId}`);
+      severityCandidates.push(severityForControl(implementation.primaryControl.code, implementation.primaryControl.category));
+    }
+  }
+
+  if (gaps.length === 0) {
+    return pass(
+      `Governance engineering traceability is complete: ${system.controlImplementations.length} implementation(s) connect controls to evidence, monitoring, validation, and status.`,
+      `governanceEngineering:${system.slug}`
+    );
+  }
+
+  return fail(
+    `Governance engineering gaps: ${gaps.join("; ")}.`,
+    `governanceEngineeringGaps:${gaps.join("|")}`,
+    highestFindingSeverity(severityCandidates)
+  );
+}
+
+function isGovernanceEngineeringRequired(code: string, lifecycleStatus: string, highestAgenticLevel: number) {
+  if (!governanceEngineeringRequiredControls.has(code)) return false;
+  if ((code === "AI-AGENT-007" || code === "AI-AGENT-009") && highestAgenticLevel < 3) return false;
+  if (code === "AI-LC-006" && lifecycleStatus !== "PRODUCTION" && highestAgenticLevel < 3) return false;
+  return true;
+}
+
+function isRuntimeControlMonitored(implementation: MonitoringSystem["controlImplementations"][number]) {
+  const evidenceTypes = implementation.evidence.map((evidence) => evidence.evidenceType);
+  return implementation.validationMethod.includes("CCM-") ||
+    evidenceTypes.includes("Control Test") ||
+    evidenceTypes.includes("Monitoring Report");
+}
+
+function severityForControl(code: string, category: string) {
+  if (code === "AI-AGENT-007" || code === "AI-LC-006" || code === "AI-AGENT-009") return FindingSeverity.CRITICAL;
+  if (code.startsWith("AI-AGENT-") || category === "SECURITY" || category === "HUMAN_OVERSIGHT") return FindingSeverity.HIGH;
+  if (code.startsWith("AI-GOV-") || code.startsWith("AI-LC-")) return FindingSeverity.MEDIUM;
+  return FindingSeverity.LOW;
+}
+
+function highestFindingSeverity(severities: FindingSeverity[]) {
+  const order = [FindingSeverity.CRITICAL, FindingSeverity.HIGH, FindingSeverity.MEDIUM, FindingSeverity.LOW, FindingSeverity.INFORMATIONAL];
+  return order.find((severity) => severities.includes(severity)) ?? FindingSeverity.HIGH;
+}
+
+const lifecycleStageOrder = ["PROPOSED", "DEVELOPMENT", "TESTING", "PILOT", "PRODUCTION", "RETIRED"] as const;
+
+const requiredApprovalsByStage: Record<string, string[]> = {
+  PROPOSED: ["AI Intake"],
+  DEVELOPMENT: ["AI Intake", "Risk Assessment", "Regulatory Mapping"],
+  TESTING: ["AI Intake", "Risk Assessment", "Regulatory Mapping", "Evidence Completeness", "Validation"],
+  PILOT: ["AI Intake", "Risk Assessment", "Regulatory Mapping", "Evidence Completeness", "Validation", "Pilot Approval"],
+  PRODUCTION: ["AI Intake", "Risk Assessment", "Regulatory Mapping", "Evidence Completeness", "Validation", "Production Approval"],
+  RETIRED: ["AI Intake", "Retirement Approval"]
+};
+
+const requiredGateControlsByStage: Record<string, string[]> = {
+  PROPOSED: ["AI-LC-001"],
+  DEVELOPMENT: ["AI-LC-001", "AI-LC-002", "AI-LC-003"],
+  TESTING: ["AI-LC-001", "AI-LC-002", "AI-LC-003", "AI-LC-004", "AI-LC-005"],
+  PILOT: ["AI-LC-001", "AI-LC-002", "AI-LC-003", "AI-LC-004", "AI-LC-005"],
+  PRODUCTION: ["AI-LC-001", "AI-LC-002", "AI-LC-003", "AI-LC-004", "AI-LC-005", "AI-LC-006"],
+  RETIRED: ["AI-LC-007"]
+};
+
+function evaluateLifecycleGovernance(system: MonitoringSystem, executionDate: Date) {
+  const gaps: string[] = [];
+  const stage = system.lifecycleStatus;
+  const approvedTypes = new Set(
+    system.lifecycleApprovals
+      .filter((approval) => approval.status === "APPROVED")
+      .map((approval) => approval.approvalType)
+  );
+  const currentStageRecord = system.lifecycleRecords
+    .filter((record) => record.lifecycleStage === stage)
+    .sort((a, b) => b.stageEntryDate.getTime() - a.stageEntryDate.getTime())[0];
+
+  if (!currentStageRecord) {
+    gaps.push(`current lifecycle record missing for ${stage}`);
+  }
+
+  for (const approvalType of requiredApprovalsByStage[stage] ?? []) {
+    if (!approvedTypes.has(approvalType)) gaps.push(`required approval missing: ${approvalType}`);
+  }
+
+  const controlsByCode = new Map(system.systemControls.map((mapping) => [mapping.control.code, mapping]));
+  for (const code of requiredGateControlsByStage[stage] ?? []) {
+    const mapping = controlsByCode.get(code);
+    if (!mapping) {
+      gaps.push(`stage gate control missing: ${code}`);
+    } else if (mapping.auditStatus !== AuditStatus.ON_TRACK) {
+      gaps.push(`stage gate incomplete: ${code} is ${mapping.auditStatus}`);
+    }
+  }
+
+  if (stage === "PRODUCTION" && !approvedTypes.has("Production Approval")) {
+    gaps.push("production system lacks approval");
+  }
+
+  if (system.nextReviewDate < executionDate) {
+    gaps.push(`review overdue: ${system.nextReviewDate.toISOString().slice(0, 10)}`);
+  }
+
+  const highestRecordedStage = system.lifecycleRecords.reduce((highest, record) => {
+    const index = lifecycleStageOrder.indexOf(record.lifecycleStage);
+    return Math.max(highest, index);
+  }, -1);
+  const currentStageIndex = lifecycleStageOrder.indexOf(stage);
+  if (highestRecordedStage > -1 && currentStageIndex > -1 && highestRecordedStage < currentStageIndex) {
+    gaps.push(`lifecycle history does not reach current stage ${stage}`);
+  }
+
+  if (gaps.length === 0) {
+    return pass(
+      `Lifecycle governance is complete for ${stage}: required approvals, stage gate controls, lifecycle history, and review currency are recorded.`,
+      `lifecycleGovernance:${system.slug}:${stage}`
+    );
+  }
+
+  return fail(`Lifecycle governance gaps for ${stage}: ${gaps.join("; ")}.`, `lifecycleGovernanceGaps:${gaps.join("|")}`);
 }
 
 function evaluateAgenticGovernance(system: MonitoringSystem, executionDate: Date) {
@@ -451,8 +654,8 @@ function warning(resultDetails: string, evidenceReference: string) {
   return { result: TestResult.WARNING, resultDetails, evidenceReference };
 }
 
-function fail(resultDetails: string, evidenceReference: string) {
-  return { result: TestResult.FAIL, resultDetails, evidenceReference };
+function fail(resultDetails: string, evidenceReference: string, severity?: FindingSeverity) {
+  return { result: TestResult.FAIL, resultDetails, evidenceReference, severity };
 }
 
 function remediationDays(severity: FindingSeverity) {
@@ -487,7 +690,16 @@ async function getMonitoringSystemType(prisma: PrismaClient) {
       governedTools: true,
       agentActions: true,
       executionLogs: { include: { action: true, approvalWorkflow: true } },
-      killSwitch: true
+      killSwitch: true,
+      lifecycleRecords: true,
+      lifecycleApprovals: true,
+      controlImplementations: {
+        include: {
+          primaryControl: true,
+          controlLinks: { include: { control: true } },
+          evidence: true
+        }
+      }
     }
   });
 }

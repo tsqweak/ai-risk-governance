@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { AlertTriangle, CheckCircle2, ClipboardList, FileWarning } from "lucide-react";
 import { getMonitoringDashboard } from "../data";
 import { formatDate } from "../components/format";
@@ -72,19 +73,30 @@ export default async function MonitoringPage() {
                 <th className="px-4 py-3">AI system</th>
                 <th className="px-4 py-3">Result</th>
                 <th className="px-4 py-3">Details</th>
-                <th className="px-4 py-3">Evidence</th>
+                <th className="px-4 py-3">Evidence Reviewed</th>
+                <th className="px-4 py-3">Assurance</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
-              {testRuns.slice(0, 30).map((run) => (
-                <tr key={run.id}>
-                  <td className="px-4 py-4 font-medium text-ink">{run.controlTest.testId}</td>
-                  <td className="px-4 py-4 text-slate-700">{run.aiSystem.name}</td>
-                  <td className="px-4 py-4"><StatusBadge status={run.result} /></td>
-                  <td className="px-4 py-4 text-slate-700">{run.resultDetails}</td>
-                  <td className="px-4 py-4 text-slate-500">{run.evidenceReference}</td>
-                </tr>
-              ))}
+              {testRuns.slice(0, 30).map((run) => {
+                const linkedFindings = findings.filter((finding) => finding.aiSystemId === run.aiSystemId && finding.controlTestId === run.controlTestId);
+                return (
+                  <tr key={run.id}>
+                    <td className="px-4 py-4 font-medium text-ink">{run.controlTest.testId}</td>
+                    <td className="px-4 py-4 text-slate-700">
+                      <Link href={`/systems/${run.aiSystem.slug}/monitoring`} className="font-semibold text-ink hover:text-brand">{run.aiSystem.name}</Link>
+                    </td>
+                    <td className="px-4 py-4"><StatusBadge status={run.result} /></td>
+                    <td className="px-4 py-4 text-slate-700">{run.resultDetails}</td>
+                    <td className="px-4 py-4 text-slate-500">{run.evidenceReference}</td>
+                    <td className="px-4 py-4 text-xs leading-5 text-slate-600">
+                      <div>Control: {run.controlTest.title}</div>
+                      <div>Owner: control owner in mapped system workspace</div>
+                      <div>Linked findings: {linkedFindings.length}</div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

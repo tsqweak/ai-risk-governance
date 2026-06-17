@@ -83,6 +83,38 @@ export default async function SystemAgenticGovernancePage({ params }: { params: 
         </div>
       </Section>
 
+      <Section title="Agentic governance assurance">
+        <div className="grid gap-4 lg:grid-cols-3">
+          <AssuranceCard
+            title="Tools"
+            risk={`Tool risk is governed through ${system.governedTools.length} governed tool records.`}
+            approval={`${system.governedTools.length} governed tool records and authority limits`}
+            evidence={`${system.evidenceObjects.length} evidence objects available for proof and download`}
+            monitoring={`${system.testRuns.filter((run) => run.controlTest.testId === "CCM-012").length} agentic monitoring runs`}
+            owner={system.technologyOwner}
+            review={system.governedTools.map((tool) => formatDate(tool.nextReviewDate)).join(", ") || "No review dates"}
+          />
+          <AssuranceCard
+            title="Authority"
+            risk={`Risk assessment: ${system.assessment?.delegatedAuthorityRisk ?? "Unassessed"} delegated authority risk`}
+            approval={system.authorityAssignment ? `Level ${system.authorityAssignment.delegatedAuthority.authorityLevel} authority assigned` : "No authority assignment"}
+            evidence="Authority assignment, approval workflow, lifecycle approvals, and execution evidence"
+            monitoring={`${system.agenticFindings.length} agentic findings`}
+            owner={system.riskOwner || "Unassigned"}
+            review={formatDate(system.nextReviewDate)}
+          />
+          <AssuranceCard
+            title="Actions"
+            risk={`${system.agentActions.length} agent actions with risk ratings and approval requirements`}
+            approval={system.agentActions.map((action) => `${action.name}: ${humanize(action.approvalRequirement)}`).join("; ")}
+            evidence="Execution logs, approval references, kill-switch records, and monitoring reports"
+            monitoring={`${system.executionLogs.length} execution logs reviewed`}
+            owner={system.businessOwner}
+            review={formatDate(system.lastReviewDate)}
+          />
+        </div>
+      </Section>
+
       <Section title="Tools, Logs & Kill Switch">
         <div className="grid gap-4 xl:grid-cols-3">
           <Panel title="Governed Tools">
@@ -137,6 +169,22 @@ export default async function SystemAgenticGovernancePage({ params }: { params: 
         </div>
       </Section>
     </>
+  );
+}
+
+function AssuranceCard({ title, risk, approval, evidence, monitoring, owner, review }: { title: string; risk: string; approval: string; evidence: string; monitoring: string; owner: string; review: string }) {
+  return (
+    <article className="rounded-md border border-line bg-white p-4">
+      <h2 className="text-sm font-semibold text-ink">{title}</h2>
+      <div className="mt-3 grid gap-2 text-sm leading-6 text-slate-700">
+        <p><span className="font-semibold text-ink">Risk Assessment:</span> {risk}</p>
+        <p><span className="font-semibold text-ink">Approval:</span> {approval}</p>
+        <p><span className="font-semibold text-ink">Evidence:</span> {evidence}</p>
+        <p><span className="font-semibold text-ink">Monitoring:</span> {monitoring}</p>
+        <p><span className="font-semibold text-ink">Owner:</span> {owner}</p>
+        <p><span className="font-semibold text-ink">Review Date:</span> {review}</p>
+      </div>
+    </article>
   );
 }
 

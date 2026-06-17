@@ -1,4 +1,5 @@
-import { CheckCircle2 } from "lucide-react";
+import Link from "next/link";
+import { CheckCircle2, GitBranch, Radar } from "lucide-react";
 import { LearningPanel, Section } from "../components/ui";
 
 export const dynamic = "force-dynamic";
@@ -71,6 +72,29 @@ export default function OnboardingPage() {
               {gate}
             </div>
           ))}
+        </div>
+      </Section>
+
+      <Section title="Governance onboarding workspaces">
+        <div className="grid gap-4 md:grid-cols-2">
+          <Link href="/onboarding/repositories" className="block rounded-md border border-line bg-white p-5 hover:bg-panel">
+            <div className="flex items-center gap-2 text-sm font-semibold text-ink">
+              <GitBranch className="h-4 w-4 text-brand" />
+              Repository Discovery & Governance Profiling
+            </div>
+            <p className="mt-2 text-sm leading-6 text-slate-700">
+              Discover AI components, evidence sources, suggested controls, suggested risks, and reviewable governance profiles from GitHub or local repositories.
+            </p>
+          </Link>
+          <Link href="/onboarding/travel-brain-pilot" className="block rounded-md border border-line bg-white p-5 hover:bg-panel">
+            <div className="flex items-center gap-2 text-sm font-semibold text-ink">
+              <Radar className="h-4 w-4 text-brand" />
+              Travel Brain Governance Manifest Pilot
+            </div>
+            <p className="mt-2 text-sm leading-6 text-slate-700">
+              Review Travel Brain against AI Governance.yaml v2, asset inventory, evidence source discovery, and automation readiness before Phase 9.
+            </p>
+          </Link>
         </div>
       </Section>
     </>

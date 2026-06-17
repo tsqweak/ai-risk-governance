@@ -11,6 +11,7 @@ enum LifecycleStatus {
   PROPOSED
   DEVELOPMENT
   TESTING
+  PILOT
   PRODUCTION
   RETIRED
 }
@@ -145,6 +146,399 @@ enum ApprovalLevel {
   COMMITTEE_APPROVAL
 }
 
+enum LifecycleApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum RiskTreatment {
+  MITIGATE
+  ACCEPT
+  TRANSFER
+  AVOID
+}
+
+enum AiRiskStatus {
+  OPEN
+  IN_TREATMENT
+  ACCEPTED
+  CLOSED
+}
+
+enum ControlImplementationStatus {
+  PLANNED
+  IMPLEMENTED
+  VALIDATED
+  RETIRED
+}
+
+enum RepositoryType {
+  GITHUB
+  LOCAL
+}
+
+enum RepositoryReviewStatus {
+  SUGGESTED
+  REVIEWED
+  APPROVED
+  REJECTED
+}
+
+enum RepositoryConnectionStatus {
+  CONNECTED
+  DISCONNECTED
+  ERROR
+}
+
+enum DiscoveredComponentType {
+  MODEL
+  PROMPT
+  AGENT
+  TOOL
+  DATABASE
+  EXTERNAL_SERVICE
+}
+
+enum DiscoveredEvidenceSourceType {
+  PROMPT_FILE
+  CONFIGURATION_FILE
+  POLICY_FILE
+  WORKFLOW_DEFINITION
+  LOG_SOURCE
+  MONITORING_SOURCE
+  APPROVAL_SOURCE
+}
+
+enum ManifestValidationStatus {
+  VALID
+  WARNING
+  INVALID
+}
+
+enum AssetType {
+  GITHUB
+  LOGS
+  PORTAINER
+  SUPABASE
+  MCP
+  NOTION
+  SECRETS
+}
+
+enum AssetCriticality {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum AssetStatus {
+  ACTIVE
+  DEGRADED
+  INACTIVE
+}
+
+enum AssetDiscoveryRunStatus {
+  COMPLETED
+  PARTIAL
+  ERROR
+}
+
+enum AssetDiscoverySourceType {
+  GITHUB_REPOSITORY
+  AI_GOVERNANCE_MANIFEST
+  ENVIRONMENT_VARIABLES
+  GITHUB_WORKFLOWS
+  DOCKER_FILES
+  DOCKER_COMPOSE
+  PORTAINER_METADATA
+  SUPABASE_METADATA
+  MCP_METADATA
+  CONFIGURATION_FILES
+  DOCUMENTATION
+  NOTION_REFERENCES
+  SECRETS_METADATA
+}
+
+enum AssetDiscoveryAssetType {
+  REPOSITORY
+  DATABASE
+  CONTAINER
+  MCP_SERVER
+  EXTERNAL_API
+  DOMAIN
+  DNS
+  WEB_APPLICATION
+  STORAGE
+  MONITORING_SYSTEM
+  SECRETS_SOURCE
+  IDENTITY_PROVIDER
+  EMAIL_PROVIDER
+  THIRD_PARTY_SAAS
+  DOCUMENTATION
+  LOG_SOURCE
+  CONFIGURATION
+  WORKFLOW
+}
+
+enum AssetDiscoveryDisposition {
+  KNOWN_ASSET
+  UNKNOWN_ASSET
+  UNTRACKED_ASSET
+  ORPHANED_ASSET
+  MISSING_ASSET
+}
+
+enum AssetDiscoveryFindingType {
+  DECLARED_ASSET_MISSING
+  UNDECLARED_ASSET_FOUND
+  UNKNOWN_INTEGRATION_FOUND
+  ORPHANED_ASSET
+  UNTRACKED_DEPENDENCY
+  MISSING_EVIDENCE_SOURCE
+}
+
+enum AssetDiscoveryFindingStatus {
+  OPEN
+  REVIEW_REQUIRED
+  ACCEPTED
+  RESOLVED
+}
+
+enum AssetDiscoveryValidationStatus {
+  VALID
+  WARNING
+  INVALID
+}
+
+enum AssetDiscoveryConfidenceLevel {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum EvidenceSourceType {
+  MANIFEST
+  PROMPT_FILE
+  POLICY_FILE
+  WORKFLOW_FILE
+  TEST
+  REVIEW
+  EXECUTION_LOG
+  MONITORING_RESULT
+  CONTROL_RESULT
+  CONTAINER_METADATA
+  DEPLOYMENT_METADATA
+  RUNTIME_METADATA
+  SCHEMA_METADATA
+  TABLE_INVENTORY
+  RLS_POLICY
+  ACCESS_CONTROL
+  AUDIT_CAPABILITY
+  MCP_SERVER_INVENTORY
+  MCP_TOOL_REGISTRY
+  MCP_TOOL_PERMISSIONS
+  MCP_AUTHORITY_REGISTRY
+  MCP_CAPABILITY_INVENTORY
+  NOTION_GOVERNANCE_PAGE
+  NOTION_GOVERNANCE_DATABASE
+  NOTION_APPROVAL_RECORD
+  NOTION_REVIEW_RECORD
+  NOTION_COMMITTEE_RECORD
+  NOTION_OWNERSHIP_RECORD
+  SECRET_INVENTORY
+  SECRET_ROTATION_RECORD
+  SECRET_OWNERSHIP_RECORD
+  SECRET_USAGE_MAPPING
+}
+
+enum EvidenceArtifactType {
+  MANIFEST
+  PROMPT
+  POLICY
+  WORKFLOW
+}
+
+enum ArtifactDriftType {
+  MANIFEST_CHANGED
+  PROMPT_CHANGED
+  POLICY_CHANGED
+  WORKFLOW_CHANGED
+}
+
+enum AssuranceRuleStatus {
+  PASS
+  WARNING
+  FAIL
+}
+
+enum AutomationLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+enum EvidenceCollectionStatus {
+  COLLECTED
+  VALIDATED
+  MISSING
+  EXPIRED
+}
+
+enum FreshnessStatus {
+  CURRENT
+  STALE
+  EXPIRED
+  MISSING
+}
+
+enum LogSourceType {
+  EXECUTION_LOG
+  MONITORING_RESULT
+  CONTROL_RESULT
+  AUDIT_EVENT
+  ERROR_EVENT
+}
+
+enum LogSourceStatus {
+  CONNECTED
+  CONFIGURED
+  GAP
+  ERROR
+}
+
+enum RuntimeEvidenceType {
+  EXECUTION
+  MONITORING
+  CONTROL_RESULT
+  AUDIT_EVENT
+}
+
+enum RuntimeEvidenceHealth {
+  PRESENT
+  MISSING
+  STALE
+}
+
+enum PortainerConnectionStatus {
+  CONNECTED
+  DISCONNECTED
+  ERROR
+}
+
+enum DeploymentEvidenceHealth {
+  PRESENT
+  MISSING
+  STALE
+  DEGRADED
+}
+
+enum SupabaseConnectionStatus {
+  CONNECTED
+  DISCONNECTED
+  ERROR
+}
+
+enum SupabaseEvidenceType {
+  SCHEMA
+  POLICY
+  ACCESS_CONTROL
+  DATA_INVENTORY
+}
+
+enum SupabaseEvidenceHealth {
+  PRESENT
+  MISSING
+  DEGRADED
+}
+
+enum SupabaseDriftType {
+  BASELINE_RECORDED
+  SCHEMA_CHANGED
+  TABLE_CHANGED
+  COLUMN_CHANGED
+  RLS_CHANGED
+  POLICY_CHANGED
+  ROLE_CHANGED
+  EXTENSION_CHANGED
+  SOURCE_UNAVAILABLE
+}
+
+enum McpConnectionStatus {
+  CONNECTED
+  DISCONNECTED
+  ERROR
+}
+
+enum McpEvidenceType {
+  TOOL_REGISTRY
+  TOOL_PERMISSIONS
+  AUTHORITY_REGISTRY
+  CAPABILITY_INVENTORY
+}
+
+enum McpEvidenceHealth {
+  PRESENT
+  MISSING
+  DEGRADED
+}
+
+enum NotionConnectionStatus {
+  CONNECTED
+  DISCONNECTED
+  ERROR
+}
+
+enum NotionEvidenceType {
+  APPROVAL_EVIDENCE
+  REVIEW_EVIDENCE
+  COMMITTEE_EVIDENCE
+  GOVERNANCE_DOCUMENTATION_EVIDENCE
+  OWNERSHIP_EVIDENCE
+}
+
+enum NotionEvidenceHealth {
+  PRESENT
+  MISSING
+  DEGRADED
+}
+
+enum SecretsConnectionStatus {
+  CONNECTED
+  DISCONNECTED
+  ERROR
+}
+
+enum SecretSourceSystem {
+  ENVIRONMENT_VARIABLES
+  GITHUB_SECRETS
+  SUPABASE_SECRETS
+  PORTAINER_SECRETS
+  LOCAL_SECRET_STORES
+}
+
+enum SecretEvidenceType {
+  SECRET_INVENTORY
+  ROTATION_EVIDENCE
+  OWNERSHIP_EVIDENCE
+  USAGE_MAPPING
+}
+
+enum SecretEvidenceHealth {
+  PRESENT
+  MISSING
+  DEGRADED
+}
+
+enum DeploymentDriftType {
+  BASELINE_RECORDED
+  IMAGE_CHANGED
+  CONTAINER_CHANGED
+  LOGGING_DISABLED
+  HEALTH_STATUS_DEGRADED
+  SOURCE_UNAVAILABLE
+}
+
 model Persona {
   id          String   @id @default(cuid())
   name        String   @unique
@@ -152,6 +546,89 @@ model Persona {
   role        String
   description String
   createdAt   DateTime @default(now())
+}
+
+model RepositoryDiscovery {
+  id                   String                    @id @default(cuid())
+  name                 String
+  description          String
+  location             String
+  repositoryType       RepositoryType
+  reviewStatus         RepositoryReviewStatus
+  suggestedSystemType  String
+  suggestedAgenticLevel Int
+  suggestedAuthorityLevel Int
+  suggestedLifecycleStage LifecycleStatus
+  suggestedJurisdictionsJson String
+  suggestedRiskDomainsJson String
+  suggestedControlsJson String
+  suggestedRisksJson   String
+  rationale            String
+  reviewer             String?
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+  components           RepositoryComponent[]
+  evidenceSources      RepositoryEvidenceSource[]
+  governanceManifest   GovernanceManifest?
+  onboardingFindings   RepositoryOnboardingFinding[]
+}
+
+model RepositoryComponent {
+  id                    String                  @id @default(cuid())
+  repositoryDiscoveryId String
+  repositoryDiscovery   RepositoryDiscovery     @relation(fields: [repositoryDiscoveryId], references: [id], onDelete: Cascade)
+  componentType         DiscoveredComponentType
+  name                  String
+  location              String
+  rationale             String
+}
+
+model RepositoryEvidenceSource {
+  id                    String                       @id @default(cuid())
+  repositoryDiscoveryId String
+  repositoryDiscovery   RepositoryDiscovery          @relation(fields: [repositoryDiscoveryId], references: [id], onDelete: Cascade)
+  sourceType            DiscoveredEvidenceSourceType
+  title                 String
+  location              String
+  collectionMethod      String
+  validationMethod      String
+  automationLevel       String
+  rationale             String
+}
+
+model GovernanceManifest {
+  id                    String                   @id @default(cuid())
+  manifestId            String                   @unique
+  repositoryDiscoveryId String                   @unique
+  repositoryDiscovery   RepositoryDiscovery      @relation(fields: [repositoryDiscoveryId], references: [id], onDelete: Cascade)
+  fileName              String
+  location              String
+  validationStatus      ManifestValidationStatus
+  systemName            String
+  businessOwner         String
+  riskOwner             String
+  lifecycleStage        LifecycleStatus
+  aiType                String
+  riskTier              RiskLevel
+  evidenceSourceCount   Int
+  manifestYaml          String
+  validationMessagesJson String
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+}
+
+model RepositoryOnboardingFinding {
+  id                    String              @id @default(cuid())
+  findingId             String
+  repositoryDiscoveryId String
+  repositoryDiscovery   RepositoryDiscovery @relation(fields: [repositoryDiscoveryId], references: [id], onDelete: Cascade)
+  title                 String
+  severity              FindingSeverity
+  status                FindingStatus
+  rationale             String
+  createdAt             DateTime            @default(now())
+
+  @@index([findingId])
 }
 
 model AiSystem {
@@ -191,6 +668,7 @@ model AiSystem {
   findings                     Finding[]
   evidenceObjects              EvidenceObject[]
   evidenceHealth               EvidenceHealth[]
+  auditPackages                AuditPackage[]
   aiModels                     AiModel[]
   promptAssets                 PromptAsset[]
   agents                       Agent[]
@@ -201,6 +679,756 @@ model AiSystem {
   agentActions                 AgentAction[]
   executionLogs                ExecutionLog[]
   killSwitch                   KillSwitch?
+  lifecycleRecords             AiLifecycle[]
+  lifecycleApprovals           AiLifecycleApproval[]
+  aiRisks                      AiRisk[]
+  controlImplementations       ControlImplementation[]
+  assets                       Asset[]
+  repositoryConnections        RepositoryConnection[]
+  selectedGitHubRepositories    GitHubRepositoryDiscovery[]
+  logSources                   LogSource[]
+  portainerConnections         PortainerConnection[]
+  supabaseConnections          SupabaseConnection[]
+  mcpConnections               McpConnection[]
+  notionConnections            NotionConnection[]
+  secretsConnections           SecretsConnection[]
+  assetDiscoveryRuns           AssetDiscoveryRun[]
+}
+
+model GitHubRepositoryDiscovery {
+  id                    String    @id @default(cuid())
+  repositoryId          String    @unique
+  owner                 String
+  name                  String
+  fullName              String
+  repositoryUrl         String
+  defaultBranch         String
+  description           String
+  isPrivate             Boolean
+  isArchived            Boolean
+  lastPushedAt          DateTime?
+  discoveredAt          DateTime  @default(now())
+  selectedForAiSystemId String?
+  selectedForAiSystem   AiSystem? @relation(fields: [selectedForAiSystemId], references: [id], onDelete: SetNull)
+
+  @@index([owner])
+  @@index([selectedForAiSystemId])
+}
+
+model RepositoryConnection {
+  id                String                     @id @default(cuid())
+  repositoryId      String                     @unique
+  aiSystemId        String
+  aiSystem          AiSystem                   @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  repositoryUrl     String
+  branch            String
+  status            RepositoryConnectionStatus
+  lastScan          DateTime?
+  evidenceArtifacts EvidenceArtifact[]
+  driftEvents       ArtifactDriftEvent[]
+  createdAt         DateTime                   @default(now())
+  updatedAt         DateTime                   @updatedAt
+
+  @@index([aiSystemId])
+}
+
+model Asset {
+  id              String             @id @default(cuid())
+  assetId         String             @unique
+  aiSystemId      String
+  aiSystem        AiSystem           @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  assetType       AssetType
+  name            String
+  owner           String
+  criticality     AssetCriticality
+  status          AssetStatus
+  description     String
+  evidenceSources EvidenceSource[]
+  discoveryFindings AssetDiscoveryFinding[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@index([aiSystemId])
+}
+
+model AssetDiscoveryRun {
+  id                    String                    @id @default(cuid())
+  runId                 String                    @unique
+  aiSystemId            String
+  aiSystem              AiSystem                  @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  status                AssetDiscoveryRunStatus
+  startedAt             DateTime
+  completedAt           DateTime
+  knownAssetCount       Int
+  discoveredAssetCount  Int
+  unknownAssetCount     Int
+  untrackedAssetCount   Int
+  orphanedAssetCount    Int
+  missingAssetCount     Int
+  inventoryCompleteness Int
+  summary               String
+  comparisonSummary     String
+  recommendedAction     String
+  sources               AssetDiscoverySource[]
+  findings              AssetDiscoveryFinding[]
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @updatedAt
+
+  @@index([aiSystemId])
+  @@index([status])
+}
+
+model AssetDiscoverySource {
+  id                    String                   @id @default(cuid())
+  sourceId              String                   @unique
+  runId                 String
+  run                   AssetDiscoveryRun        @relation(fields: [runId], references: [id], onDelete: Cascade)
+  sourceType            AssetDiscoverySourceType
+  name                  String
+  location              String
+  inspectedAt           DateTime
+  inspectionMethod      String
+  evidenceSummary       String
+  discoveredAssetCount  Int
+  expectedAssetCount    Int
+  unknownAssetCount     Int
+  missingAssetCount     Int
+  confidence            Int
+  findings              AssetDiscoveryFinding[]
+  createdAt             DateTime                 @default(now())
+  updatedAt             DateTime                 @updatedAt
+
+  @@index([runId])
+  @@index([sourceType])
+}
+
+model AssetDiscoveryFinding {
+  id                    String                       @id @default(cuid())
+  findingId             String                       @unique
+  runId                 String
+  run                   AssetDiscoveryRun            @relation(fields: [runId], references: [id], onDelete: Cascade)
+  sourceId              String?
+  discoverySource       AssetDiscoverySource?        @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  assetId               String?
+  asset                 Asset?                       @relation(fields: [assetId], references: [id], onDelete: SetNull)
+  findingType           AssetDiscoveryFindingType
+  disposition           AssetDiscoveryDisposition
+  assetType             AssetDiscoveryAssetType
+  assetName             String
+  declared              Boolean
+  discovered            Boolean
+  tracked               Boolean
+  orphaned              Boolean
+  evidenceSourceMissing Boolean
+  sourceLabel           String
+  sourceFile            String
+  sourceAsset           String
+  evidence              String
+  discoveryRule         String
+  reason                String
+  confidence            Int
+  confidenceLevel       AssetDiscoveryConfidenceLevel
+  validationStatus      AssetDiscoveryValidationStatus
+  validationExplanation String
+  invalidReason         String
+  severity              FindingSeverity
+  status                AssetDiscoveryFindingStatus
+  recommendedAction     String
+  relatedControlsJson   String
+  createdAt             DateTime                     @default(now())
+  updatedAt             DateTime                     @updatedAt
+
+  @@index([runId])
+  @@index([sourceId])
+  @@index([assetId])
+  @@index([findingType])
+  @@index([disposition])
+  @@index([status])
+}
+
+model EvidenceSource {
+  id                     String                    @id @default(cuid())
+  sourceId               String                    @unique
+  assetId                String
+  asset                  Asset                     @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  sourceType             EvidenceSourceType
+  collectionMethod       String
+  validationMethod       String
+  automationLevel        AutomationLevel
+  collectionStatus       EvidenceCollectionStatus
+  lastCollectedAt        DateTime?
+  lastValidatedAt        DateTime?
+  freshnessStatus        FreshnessStatus
+  connectorHealth        AuditStatus
+  evidenceLocation       String
+  governanceValue        String
+  artifacts              EvidenceArtifact[]
+  logSources             LogSource[]
+  deploymentArtifacts    DeploymentEvidenceArtifact[]
+  supabaseArtifacts       SupabaseEvidenceArtifact[]
+  mcpArtifacts            McpEvidenceArtifact[]
+  notionArtifacts         NotionEvidenceArtifact[]
+  secretArtifacts          SecretEvidenceArtifact[]
+  createdAt              DateTime                  @default(now())
+  updatedAt              DateTime                  @updatedAt
+
+  @@index([assetId])
+}
+
+model LogSource {
+  id                 String                    @id @default(cuid())
+  logSourceId        String                    @unique
+  aiSystemId         String
+  aiSystem           AiSystem                  @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  evidenceSourceId   String?
+  evidenceSource     EvidenceSource?           @relation(fields: [evidenceSourceId], references: [id], onDelete: SetNull)
+  name               String
+  location           String
+  type               LogSourceType
+  status             LogSourceStatus
+  retentionPeriod    String
+  lastCollected      DateTime?
+  sourceGap          String
+  runtimeArtifacts   RuntimeEvidenceArtifact[]
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+
+  @@index([aiSystemId])
+  @@index([evidenceSourceId])
+  @@index([type])
+  @@index([status])
+}
+
+model RuntimeEvidenceArtifact {
+  id                  String                  @id @default(cuid())
+  artifactId          String                  @unique
+  logSourceId         String
+  logSource           LogSource               @relation(fields: [logSourceId], references: [id], onDelete: Cascade)
+  eventType           LogSourceType
+  evidenceType        RuntimeEvidenceType
+  eventTimestamp      DateTime
+  correlationId       String
+  hash                String
+  validationStatus    EvidenceValidationValue
+  collectionDate      DateTime
+  sourceRecordId      String
+  relatedControlId    String
+  sanitizedEvidence   String
+  evidenceSummary     String
+  collectionReason    String
+  retentionPolicy     String
+  evidenceHealth      RuntimeEvidenceHealth
+  retentionValid      Boolean
+  collectionCurrent   Boolean
+  collectionRationale String
+  assuranceSummary    String
+  failureCondition    String
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+
+  @@index([logSourceId])
+  @@index([relatedControlId])
+  @@index([validationStatus])
+}
+
+model PortainerConnection {
+  id                  String                    @id @default(cuid())
+  connectionId        String                    @unique
+  aiSystemId          String
+  aiSystem            AiSystem                  @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  endpoint            String
+  environment         String
+  status              PortainerConnectionStatus
+  lastScan            DateTime?
+  sourceGap           String
+  deploymentArtifacts DeploymentEvidenceArtifact[]
+  driftEvents         DeploymentDriftEvent[]
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+
+  @@index([aiSystemId])
+  @@index([status])
+}
+
+model DeploymentEvidenceArtifact {
+  id                    String                    @id @default(cuid())
+  artifactId            String                    @unique
+  portainerConnectionId String
+  portainerConnection   PortainerConnection       @relation(fields: [portainerConnectionId], references: [id], onDelete: Cascade)
+  evidenceSourceId      String?
+  evidenceSource        EvidenceSource?           @relation(fields: [evidenceSourceId], references: [id], onDelete: SetNull)
+  deploymentId          String
+  containerName         String
+  imageName             String
+  imageTag              String
+  deploymentTimestamp   DateTime?
+  collectionTimestamp   DateTime
+  hash                  String
+  validationStatus      EvidenceValidationValue
+  restartCount          Int?
+  healthStatus          String
+  loggingEnabled        Boolean?
+  runtimeConfiguration  String
+  collectionMethod      String
+  provenance            String
+  relatedControlsJson   String
+  evidenceSummary       String
+  collectionReason      String
+  assuranceSummary      String
+  failureCondition      String
+  sourceGap             String
+  evidenceHealth        DeploymentEvidenceHealth
+  driftEvents           DeploymentDriftEvent[]
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @updatedAt
+
+  @@index([portainerConnectionId])
+  @@index([evidenceSourceId])
+  @@index([validationStatus])
+  @@index([evidenceHealth])
+}
+
+model SupabaseConnection {
+  id                  String                    @id @default(cuid())
+  connectionId        String                    @unique
+  aiSystemId          String
+  aiSystem            AiSystem                  @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  projectId           String
+  environment         String
+  status              SupabaseConnectionStatus
+  lastScan            DateTime?
+  sourceGap           String
+  evidenceArtifacts   SupabaseEvidenceArtifact[]
+  snapshots           SupabaseEvidenceSnapshot[]
+  driftEvents         SupabaseDriftEvent[]
+  controlValidations  SupabaseControlValidation[]
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+
+  @@index([aiSystemId])
+  @@index([status])
+}
+
+model SupabaseEvidenceArtifact {
+  id                    String                    @id @default(cuid())
+  artifactId            String                    @unique
+  supabaseConnectionId  String
+  supabaseConnection    SupabaseConnection        @relation(fields: [supabaseConnectionId], references: [id], onDelete: Cascade)
+  evidenceSourceId      String?
+  evidenceSource        EvidenceSource?           @relation(fields: [evidenceSourceId], references: [id], onDelete: SetNull)
+  evidenceType          SupabaseEvidenceType
+  title                 String
+  collectionTimestamp   DateTime
+  source                String
+  hash                  String
+  validationStatus      EvidenceValidationValue
+  evidenceHealth        SupabaseEvidenceHealth
+  schemaInventory       String
+  tableInventory        String
+  rlsStatus             String
+  enabledPolicies       String
+  databaseRoles         String
+  auditCapability       String
+  collectionMethod      String
+  provenance            String
+  relatedControlsJson   String
+  evidenceSummary       String
+  collectionReason      String
+  assuranceSummary      String
+  failureCondition      String
+  sourceGap             String
+  controlValidations    SupabaseControlValidation[]
+  createdAt             DateTime                  @default(now())
+  updatedAt             DateTime                  @updatedAt
+
+  @@index([supabaseConnectionId])
+  @@index([evidenceSourceId])
+  @@index([validationStatus])
+  @@index([evidenceHealth])
+}
+
+model SupabaseEvidenceSnapshot {
+  id                   String             @id @default(cuid())
+  snapshotId           String             @unique
+  supabaseConnectionId String
+  supabaseConnection   SupabaseConnection @relation(fields: [supabaseConnectionId], references: [id], onDelete: Cascade)
+  collectionTimestamp  DateTime
+  databaseVersion      String
+  hash                 String
+  schemaInventory      String
+  tableInventory       String
+  rlsInventory         String
+  policyInventory      String
+  roleInventory        String
+  extensionInventory   String
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  @@index([supabaseConnectionId])
+  @@index([collectionTimestamp])
+  @@index([hash])
+}
+
+model SupabaseDriftEvent {
+  id                   String              @id @default(cuid())
+  driftId              String              @unique
+  supabaseConnectionId String
+  supabaseConnection   SupabaseConnection  @relation(fields: [supabaseConnectionId], references: [id], onDelete: Cascade)
+  previousSnapshotId   String
+  currentSnapshotId    String
+  eventType            SupabaseDriftType
+  previousValue        String
+  currentValue         String
+  detectedAt           DateTime
+  changeSummary        String
+  status               AssuranceRuleStatus
+  controlImpact        String
+  recommendedAction    String
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+
+  @@index([supabaseConnectionId])
+  @@index([eventType])
+  @@index([status])
+}
+
+model SupabaseControlValidation {
+  id                         String                    @id @default(cuid())
+  validationId               String                    @unique
+  supabaseConnectionId       String
+  supabaseConnection         SupabaseConnection        @relation(fields: [supabaseConnectionId], references: [id], onDelete: Cascade)
+  supabaseEvidenceArtifactId String?
+  supabaseEvidenceArtifact   SupabaseEvidenceArtifact? @relation(fields: [supabaseEvidenceArtifactId], references: [id], onDelete: SetNull)
+  controlId                  String
+  result                     AssuranceRuleStatus
+  evidenceUsed               String
+  validationChecks           String
+  changeDetected             String
+  controlImpact              String
+  recommendedAction          String
+  failureConditions          String
+  createdAt                  DateTime                  @default(now())
+  updatedAt                  DateTime                  @updatedAt
+
+  @@index([supabaseConnectionId])
+  @@index([supabaseEvidenceArtifactId])
+  @@index([controlId])
+  @@index([result])
+}
+
+model McpConnection {
+  id                String              @id @default(cuid())
+  connectionId      String              @unique
+  aiSystemId        String
+  aiSystem          AiSystem            @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  serverName        String
+  endpoint          String
+  status            McpConnectionStatus
+  lastScan          DateTime?
+  sourceGap         String
+  evidenceArtifacts McpEvidenceArtifact[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  @@index([aiSystemId])
+  @@index([status])
+}
+
+model McpEvidenceArtifact {
+  id                       String                  @id @default(cuid())
+  artifactId               String                  @unique
+  mcpConnectionId          String
+  mcpConnection            McpConnection           @relation(fields: [mcpConnectionId], references: [id], onDelete: Cascade)
+  evidenceSourceId         String?
+  evidenceSource           EvidenceSource?         @relation(fields: [evidenceSourceId], references: [id], onDelete: SetNull)
+  evidenceType             McpEvidenceType
+  title                    String
+  collectionTimestamp      DateTime
+  source                   String
+  version                  String
+  hash                     String
+  validationStatus         EvidenceValidationValue
+  evidenceHealth           McpEvidenceHealth
+  serverInventory          String
+  toolInventory            String
+  toolCategories           String
+  declaredPermissions      String
+  authorityClassifications String
+  capabilityInventory      String
+  collectionMethod         String
+  provenance               String
+  relatedControlsJson      String
+  evidenceSummary          String
+  collectionReason         String
+  assuranceSummary         String
+  failureCondition         String
+  sourceGap                String
+  createdAt                DateTime                @default(now())
+  updatedAt                DateTime                @updatedAt
+
+  @@index([mcpConnectionId])
+  @@index([evidenceSourceId])
+  @@index([validationStatus])
+  @@index([evidenceHealth])
+}
+
+model NotionConnection {
+  id                String                 @id @default(cuid())
+  connectionId      String                 @unique
+  aiSystemId        String
+  aiSystem          AiSystem               @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  workspaceName     String
+  status            NotionConnectionStatus
+  lastScan          DateTime?
+  sourceGap         String
+  evidenceArtifacts NotionEvidenceArtifact[]
+  createdAt         DateTime               @default(now())
+  updatedAt         DateTime               @updatedAt
+
+  @@index([aiSystemId])
+  @@index([status])
+}
+
+model NotionEvidenceArtifact {
+  id                         String                @id @default(cuid())
+  artifactId                 String                @unique
+  notionConnectionId         String
+  notionConnection           NotionConnection      @relation(fields: [notionConnectionId], references: [id], onDelete: Cascade)
+  evidenceSourceId           String?
+  evidenceSource             EvidenceSource?       @relation(fields: [evidenceSourceId], references: [id], onDelete: SetNull)
+  evidenceType               NotionEvidenceType
+  title                      String
+  source                     String
+  collectionTimestamp        DateTime
+  lastModified               DateTime?
+  hash                       String
+  validationStatus           EvidenceValidationValue
+  evidenceHealth             NotionEvidenceHealth
+  governancePages            String
+  governanceDatabases        String
+  approvalRecords            String
+  reviewRecords              String
+  committeeRecords           String
+  ownershipRecords           String
+  governanceDocumentation    String
+  collectionMethod           String
+  provenance                 String
+  relatedControlsJson        String
+  evidenceSummary            String
+  collectionReason           String
+  assuranceSummary           String
+  failureCondition           String
+  sourceGap                  String
+  createdAt                  DateTime              @default(now())
+  updatedAt                  DateTime              @updatedAt
+
+  @@index([notionConnectionId])
+  @@index([evidenceSourceId])
+  @@index([validationStatus])
+  @@index([evidenceHealth])
+}
+
+model SecretsConnection {
+  id                String                  @id @default(cuid())
+  connectionId      String                  @unique
+  aiSystemId        String
+  aiSystem          AiSystem                @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  sourceSystem      SecretSourceSystem
+  status            SecretsConnectionStatus
+  lastScan          DateTime?
+  sourceGap         String
+  evidenceArtifacts SecretEvidenceArtifact[]
+  createdAt         DateTime                @default(now())
+  updatedAt         DateTime                @updatedAt
+
+  @@index([aiSystemId])
+  @@index([sourceSystem])
+  @@index([status])
+}
+
+model SecretEvidenceArtifact {
+  id                      String                  @id @default(cuid())
+  artifactId              String                  @unique
+  secretsConnectionId     String
+  secretsConnection       SecretsConnection       @relation(fields: [secretsConnectionId], references: [id], onDelete: Cascade)
+  evidenceSourceId        String?
+  evidenceSource          EvidenceSource?         @relation(fields: [evidenceSourceId], references: [id], onDelete: SetNull)
+  evidenceType            SecretEvidenceType
+  title                   String
+  source                  SecretSourceSystem
+  environment             String
+  collectionTimestamp     DateTime
+  hash                    String
+  validationStatus        EvidenceValidationValue
+  evidenceHealth          SecretEvidenceHealth
+  secretInventory         String
+  rotationEvidence        String
+  ownershipEvidence       String
+  usageMapping            String
+  plaintextProhibition    String
+  collectionMethod        String
+  provenance              String
+  relatedControlsJson     String
+  evidenceSummary         String
+  collectionReason        String
+  assuranceSummary        String
+  failureCondition        String
+  warningReason           String
+  evidenceUsed            String
+  controlImpact           String
+  recommendedAction       String
+  sourceGap               String
+  createdAt               DateTime                @default(now())
+  updatedAt               DateTime                @updatedAt
+
+  @@index([secretsConnectionId])
+  @@index([evidenceSourceId])
+  @@index([source])
+  @@index([validationStatus])
+  @@index([evidenceHealth])
+}
+
+model EvidenceArtifact {
+  id               String                   @id @default(cuid())
+  artifactId       String                   @unique
+  sourceId         String
+  source           EvidenceSource           @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  artifactType     EvidenceArtifactType
+  name             String
+  path             String
+  content          String
+  version          String
+  artifactHash     String
+  commitSha        String
+  sourceUrl        String
+  repositoryConnectionId String?
+  repositoryConnection   RepositoryConnection? @relation(fields: [repositoryConnectionId], references: [id], onDelete: SetNull)
+  lastCollected    DateTime
+  validationStatus EvidenceValidationValue
+  assuranceRules   AssuranceRule[]
+  snapshots        EvidenceSnapshot[]
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+
+  @@index([sourceId])
+  @@index([repositoryConnectionId])
+}
+
+model EvidenceSnapshot {
+  id                 String           @id @default(cuid())
+  snapshotId         String           @unique
+  evidenceArtifactId String
+  evidenceArtifact   EvidenceArtifact @relation(fields: [evidenceArtifactId], references: [id], onDelete: Cascade)
+  content            String
+  artifactHash       String
+  commitSha          String
+  version            String
+  sourceUrl          String
+  collectionMethod   String
+  collectedAt        DateTime
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([evidenceArtifactId])
+}
+
+model AssuranceRule {
+  id                 String              @id @default(cuid())
+  ruleId             String              @unique
+  evidenceArtifactId String
+  evidenceArtifact   EvidenceArtifact    @relation(fields: [evidenceArtifactId], references: [id], onDelete: Cascade)
+  artifactType       EvidenceArtifactType
+  controlId          String
+  validationRule     String
+  severity           FindingSeverity
+  status             AssuranceRuleStatus
+  resultSummary      String
+  missingElement     String?
+  explanation        AssuranceExplanation?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+
+  @@index([evidenceArtifactId])
+  @@index([controlId])
+  @@index([status])
+}
+
+model AssuranceExplanation {
+  id                   String        @id @default(cuid())
+  assuranceRuleId      String        @unique
+  assuranceRule        AssuranceRule @relation(fields: [assuranceRuleId], references: [id], onDelete: Cascade)
+  result               AssuranceRuleStatus
+  reason               String
+  supportingEvidence   String
+  supportingArtifacts  String
+  validationChecks     String
+  supportingControls   String
+  missingRequirements  String
+  failureConditions    String
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+}
+
+model ArtifactDriftEvent {
+  id                     String                 @id @default(cuid())
+  driftId                String                 @unique
+  repositoryConnectionId String
+  repositoryConnection   RepositoryConnection   @relation(fields: [repositoryConnectionId], references: [id], onDelete: Cascade)
+  artifactId             String
+  artifactType           EvidenceArtifactType
+  eventType              ArtifactDriftType
+  path                   String
+  previousHash           String
+  currentHash            String
+  detectedAt             DateTime
+  summary                String
+
+  @@index([repositoryConnectionId])
+}
+
+model DeploymentDriftEvent {
+  id                           String                     @id @default(cuid())
+  driftId                      String                     @unique
+  portainerConnectionId        String
+  portainerConnection          PortainerConnection        @relation(fields: [portainerConnectionId], references: [id], onDelete: Cascade)
+  deploymentEvidenceArtifactId String
+  deploymentEvidenceArtifact   DeploymentEvidenceArtifact @relation(fields: [deploymentEvidenceArtifactId], references: [id], onDelete: Cascade)
+  eventType                    DeploymentDriftType
+  previousValue                String
+  currentValue                 String
+  detectedAt                   DateTime
+  summary                      String
+  status                       AssuranceRuleStatus
+
+  @@index([portainerConnectionId])
+  @@index([deploymentEvidenceArtifactId])
+  @@index([eventType])
+}
+
+model AiLifecycle {
+  id              String                  @id @default(cuid())
+  aiSystemId      String
+  aiSystem        AiSystem                @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  lifecycleStage  LifecycleStatus
+  stageOwner      String
+  stageEntryDate  DateTime
+  stageExitDate   DateTime?
+  approvalStatus  LifecycleApprovalStatus
+  notes           String
+
+  @@unique([aiSystemId, lifecycleStage, stageEntryDate])
+}
+
+model AiLifecycleApproval {
+  id           String                  @id @default(cuid())
+  approvalId   String                  @unique
+  aiSystemId   String
+  aiSystem     AiSystem                @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  approvalType String
+  approver     String
+  status       LifecycleApprovalStatus
+  approvalDate DateTime?
+  comments     String
 }
 
 model RiskAssessment {
@@ -232,6 +1460,105 @@ model RiskAssessment {
   rationale                String
   factorsJson              String
   assessedAt               DateTime  @default(now())
+}
+
+model AiRisk {
+  id                     String        @id @default(cuid())
+  riskId                 String        @unique
+  title                  String
+  description            String
+  category               String
+  aiSystemId             String
+  aiSystem               AiSystem      @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  owner                  String
+  status                 AiRiskStatus
+  createdDate            DateTime      @default(now())
+  reviewDate             DateTime
+  inherentLikelihood     RiskLevel
+  inherentImpact         RiskLevel
+  inherentRating         RiskLevel
+  residualLikelihood     RiskLevel
+  residualImpact         RiskLevel
+  residualRating         RiskLevel
+  treatment              RiskTreatment
+  treatmentPlan          String
+  residualRiskLogic      String
+  acceptanceApprover     String?
+  acceptanceApprovalDate DateTime?
+  acceptanceExpirationDate DateTime?
+  acceptanceRationale    String?
+  controlLinks           AiRiskControl[]
+  evidenceLinks          AiRiskEvidence[]
+  findingLinks           AiRiskFinding[]
+}
+
+model AiRiskControl {
+  id        String  @id @default(cuid())
+  aiRiskId  String
+  controlId String
+  aiRisk    AiRisk  @relation(fields: [aiRiskId], references: [id], onDelete: Cascade)
+  control   Control @relation(fields: [controlId], references: [id], onDelete: Cascade)
+
+  @@unique([aiRiskId, controlId])
+}
+
+model AiRiskEvidence {
+  id               String         @id @default(cuid())
+  aiRiskId         String
+  evidenceObjectId String
+  aiRisk           AiRisk         @relation(fields: [aiRiskId], references: [id], onDelete: Cascade)
+  evidenceObject   EvidenceObject @relation(fields: [evidenceObjectId], references: [id], onDelete: Cascade)
+
+  @@unique([aiRiskId, evidenceObjectId])
+}
+
+model AiRiskFinding {
+  id        String  @id @default(cuid())
+  aiRiskId  String
+  findingId String
+  aiRisk    AiRisk  @relation(fields: [aiRiskId], references: [id], onDelete: Cascade)
+  finding   Finding @relation(fields: [findingId], references: [id], onDelete: Cascade)
+
+  @@unique([aiRiskId, findingId])
+}
+
+model ControlImplementation {
+  id                     String                      @id @default(cuid())
+  implementationId        String                      @unique
+  aiSystemId              String
+  aiSystem                AiSystem                    @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
+  controlId               String
+  primaryControl          Control                     @relation("PrimaryControlImplementation", fields: [controlId], references: [id], onDelete: Cascade)
+  implementationType      String
+  title                   String
+  description             String
+  owner                   String
+  implementationLocation  String
+  validationMethod        String
+  status                  ControlImplementationStatus
+  controlLinks            ControlImplementationControl[]
+  evidence                ImplementationEvidence[]
+}
+
+model ControlImplementationControl {
+  id                       String                @id @default(cuid())
+  controlImplementationId  String
+  controlId                String
+  controlImplementation    ControlImplementation @relation(fields: [controlImplementationId], references: [id], onDelete: Cascade)
+  control                  Control               @relation(fields: [controlId], references: [id], onDelete: Cascade)
+
+  @@unique([controlImplementationId, controlId])
+}
+
+model ImplementationEvidence {
+  id               String                @id @default(cuid())
+  evidenceId        String                @unique
+  implementationId  String
+  implementation    ControlImplementation @relation(fields: [implementationId], references: [id], onDelete: Cascade)
+  evidenceType      String
+  location          String
+  owner             String
+  validationDate    DateTime?
 }
 
 model AiModel {
@@ -421,6 +1748,26 @@ model Control {
   testingFrequency   String
   regulatoryMappings RegulatoryMapping[]
   systemControls     SystemControl[]
+  aiRiskLinks         AiRiskControl[]
+  primaryImplementations ControlImplementation[]       @relation("PrimaryControlImplementation")
+  implementationLinks    ControlImplementationControl[]
+  governanceStory         GovernanceStory?
+}
+
+model GovernanceStory {
+  id                   String   @id @default(cuid())
+  controlId            String   @unique
+  control              Control  @relation(fields: [controlId], references: [id], onDelete: Cascade)
+  riskStatement        String
+  controlObjective     String
+  evidenceNarrative    String
+  validationNarrative  String
+  monitoringNarrative  String
+  failureScenario      String
+  ownerNarrative       String
+  executiveSummary     String
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 }
 
 model Regulation {
@@ -562,6 +1909,8 @@ model EvidenceObject {
   lastUpdated     DateTime                  @updatedAt
   aiSystem        AiSystem                  @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
   requirementLinks EvidenceObjectRequirement[]
+  aiRiskLinks     AiRiskEvidence[]
+  auditPackageLinks AuditPackageEvidence[]
 }
 
 model EvidenceObjectRequirement {
@@ -586,6 +1935,29 @@ model EvidenceHealth {
   evidenceRequirement   EvidenceRequirement     @relation(fields: [evidenceRequirementId], references: [id], onDelete: Cascade)
 
   @@unique([aiSystemId, evidenceRequirementId])
+}
+
+model AuditPackage {
+  id            String                 @id @default(cuid())
+  packageId     String                 @unique
+  title         String
+  scope         String
+  packageType   String
+  owner         String
+  aiSystemId    String?
+  generatedDate DateTime               @default(now())
+  aiSystem      AiSystem?              @relation(fields: [aiSystemId], references: [id], onDelete: SetNull)
+  evidenceLinks AuditPackageEvidence[]
+}
+
+model AuditPackageEvidence {
+  id               String         @id @default(cuid())
+  auditPackageId   String
+  evidenceObjectId String
+  auditPackage     AuditPackage   @relation(fields: [auditPackageId], references: [id], onDelete: Cascade)
+  evidenceObject   EvidenceObject @relation(fields: [evidenceObjectId], references: [id], onDelete: Cascade)
+
+  @@unique([auditPackageId, evidenceObjectId])
 }
 
 model AuditEvent {
@@ -639,6 +2011,7 @@ model Finding {
   aiSystem              AiSystem          @relation(fields: [aiSystemId], references: [id], onDelete: Cascade)
   controlTest           ControlTest       @relation(fields: [controlTestId], references: [id], onDelete: Cascade)
   exceptions            Exception[]
+  aiRiskLinks           AiRiskFinding[]
 }
 
 model Exception {
