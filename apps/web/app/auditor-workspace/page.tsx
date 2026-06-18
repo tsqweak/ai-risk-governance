@@ -1,218 +1,261 @@
-import Link from "next/link";
-import { AlertTriangle, ClipboardCheck, FileSearch, GitBranch, PackageCheck, Radar } from "lucide-react";
-import { getAuditPackages, getEvidenceRepository, getExecutiveCommandCenter } from "../data";
-import { formatDate } from "../components/format";
-import { ActionRequiredList, Breadcrumbs, Metric, ProofChain, Section, SecondaryNav, StatusBadge } from "../components/ui";
-import { auditorSecondaryNav } from "../navigation-model";
+import { getAuditPackages, getControlTraceability } from "../data";
+import { AuditorWorkspaceClient, type ControlProofFile, type ProofArtifact, type ProofRequirement } from "./AuditorWorkspaceClient";
 
 export const dynamic = "force-dynamic";
 
+const scopedControls = ["AI-GOV-003", "AI-GOV-006", "AUD-001", "AI-AGENT-003", "AI-LC-006", "SEC-001"];
+
 export default async function AuditorWorkspacePage() {
-  const [data, evidence, packages] = await Promise.all([getExecutiveCommandCenter(), getEvidenceRepository(), getAuditPackages()]);
-  const evidenceGaps = data.evidenceHealth.filter((record) => record.health === "MISSING" || record.health === "EXPIRED");
-  const failedRuns = data.testRuns.filter((run) => run.result === "FAIL");
-  const reviewQueue = evidence.objects.filter((object) => object.status === "SUBMITTED" || object.status === "DRAFT" || object.status === "EXPIRED");
-  const recentEvidence = [...evidence.objects].sort((a, b) => b.lastUpdated.getTime() - a.lastUpdated.getTime()).slice(0, 5);
-  const evidenceExceptions = data.activeExceptions.filter((exception) => exception.finding.description.toLowerCase().includes("evidence") || exception.rationale.toLowerCase().includes("evidence"));
-  const actionItems = [
-    ...evidenceGaps.slice(0, 3).map((record) => ({
-      href: `/evidence-health#evidence-health-${record.id}`,
-      title: `${record.aiSystem.name}: ${record.evidenceRequirement.evidenceType}`,
-      detail: record.rationale,
-      status: record.health,
-      category: "Evidence Gap",
-      owner: record.aiSystem.riskOwner || record.aiSystem.businessOwner,
-      dueDate: "Before package readiness",
-      severity: record.health === "MISSING" || record.health === "EXPIRED" ? "HIGH" : "MEDIUM",
-      impact: `Control ${record.evidenceRequirement.controlId} cannot be treated as package-ready while evidence is ${formatDate(record.calculatedAt)} / ${record.health}.`,
-      evidenceUsed: `${record.evidenceRequirement.evidenceType} · ${record.validation}`,
-      actionLabel: "Review Evidence",
-      nextStep: "Request or refresh the required evidence.",
-      recommendedAction: "Inspect the mapped evidence requirement and request the missing or refreshed proof."
+  const [packages, traces] = await Promise.all([
+    getAuditPackages(),
+    Promise.all(scopedControls.map((controlId) => getControlTraceability(controlId)))
+  ]);
+
+  const auditPackage = packages[0] ?? null;
+  const proofFiles = traces
+    .filter((trace): trace is NonNullable<typeof trace> => Boolean(trace))
+    .map((trace) => toProofFile(trace, auditPackage));
+
+  return <AuditorWorkspaceClient proofFiles={proofFiles} />;
+}
+
+function toProofFile(
+  trace: NonNullable<Awaited<ReturnType<typeof getControlTraceability>>>,
+  auditPackage: Awaited<ReturnType<typeof getAuditPackages>>[number] | null
+): ControlProofFile {
+  const requiredEvidence = [
+    ...trace.evidenceRequired.map((item) => requirement(item.label, "Repository artifact", isPresent(item.label, trace.evidencePresent.map((present) => present.label)))),
+    ...trace.deploymentEvidenceRequired.map((item) => requirement(item.label, "Deployment evidence", isPresent(item.label, trace.deploymentEvidencePresent.map((present) => present.label)))),
+    ...trace.supabaseEvidenceRequired.map((item) => requirement(item.label, "Data governance evidence", isPresent(item.label, trace.supabaseEvidencePresent.map((present) => present.label)))),
+    ...trace.mcpEvidenceRequired.map((item) => requirement(item.label, "MCP governance evidence", isPresent(item.label, trace.mcpEvidencePresent.map((present) => present.label)))),
+    ...trace.notionEvidenceRequired.map((item) => requirement(item.label, "Human governance evidence", isPresent(item.label, trace.notionEvidencePresent.map((present) => present.label)))),
+    ...trace.secretEvidenceRequired.map((item) => requirement(item.label, "Secrets governance evidence", isPresent(item.label, trace.secretEvidencePresent.map((present) => present.label))))
+  ];
+
+  const availableEvidence = [
+    ...trace.evidenceArtifacts.map((artifact) => ({
+      id: artifact.artifactId,
+      title: artifact.name,
+      connector: connectorFromArtifactType(artifact.artifactType),
+      source: artifact.source.sourceId,
+      proofQuality: "Inspectable Evidence Artifact" as const,
+      provenance: `${artifact.path} · ${artifact.repositoryConnection?.repositoryUrl ?? "stored repository evidence"}`,
+      collectedAt: formatDateTime(artifact.lastCollected),
+      validationStatus: artifact.validationStatus,
+      hashStatus: artifact.artifactHash ? `Hash ${artifact.artifactHash.slice(0, 12)}` : "Hash unavailable",
+      snapshotStatus: "Snapshot available",
+      driftStatus: "Drift review available",
+      proves: repositoryArtifactProof(trace.control.code, artifact.artifactType, artifact.name),
+      doesNotProve: "Does not by itself prove runtime behavior, human approval, or that connector source health is current.",
+      evidenceHref: `/evidence-artifacts/${artifact.artifactId}`,
+      evidenceAccess: "Exact artifact" as const
     })),
-    ...failedRuns.slice(0, 3).map((run) => ({
-      href: `/systems/${run.aiSystem.slug}/monitoring#run-${run.id}`,
-      title: `${run.controlTest.testId} failed for ${run.aiSystem.name}`,
-      detail: run.resultDetails,
-      status: run.result,
-      category: "Failed Validation",
-      owner: run.aiSystem.riskOwner || run.aiSystem.businessOwner,
-      severity: run.controlTest.severityIfFailed,
-      dueDate: "Immediate review",
-      impact: run.controlTest.whyItMatters,
-      evidenceUsed: `${run.controlTest.testId} · ${run.evidenceReference}`,
-      actionLabel: "Review Failed Test",
-      nextStep: "Verify whether the failed validation has sufficient compensating proof.",
-      recommendedAction: "Review the exact monitoring run and verify whether the control has sufficient evidence."
+    ...trace.runtimeEvidenceArtifacts.map((artifact) => ({
+      id: artifact.artifactId,
+      title: artifact.evidenceType,
+      connector: "Logs",
+      source: artifact.logSource.logSourceId,
+      proofQuality: "Inspectable Evidence Artifact" as const,
+      provenance: `${artifact.logSource.name} · ${artifact.correlationId}`,
+      collectedAt: formatDateTime(artifact.eventTimestamp),
+      validationStatus: artifact.validationStatus,
+      hashStatus: "Runtime event hash retained",
+      snapshotStatus: artifact.collectionCurrent ? "Collection current" : "Collection stale",
+      driftStatus: artifact.retentionValid ? "Retention valid" : "Retention review",
+      proves: artifact.evidenceSummary,
+      doesNotProve: "Does not prove design-time approval unless linked to repository, review, or workflow evidence.",
+      evidenceHref: `/runtime-evidence/${artifact.artifactId}`,
+      evidenceAccess: "Exact artifact" as const
     })),
-    ...reviewQueue.slice(0, 3).map((object) => ({
-      href: `/evidence/${object.evidenceId}`,
-      title: `${object.evidenceId} · ${object.title}`,
-      detail: `${object.aiSystem.name} · reviewer ${object.reviewer}`,
-      status: object.status,
-      owner: object.owner,
-      category: "Review Task",
-      actionLabel: "Review Evidence",
-      dueDate: formatDate(object.expirationDate),
-      severity: object.status === "EXPIRED" ? "HIGH" : "MEDIUM",
-      impact: `Evidence status is ${object.status}; package readiness depends on reviewer confirmation.`,
-      evidenceUsed: `${object.evidenceType} · ${object.source}`,
-      nextStep: "Verify Evidence",
-      recommendedAction: "Verify ownership, reviewer, status, and package readiness."
+    ...trace.deploymentEvidenceArtifacts.map((artifact) => ({
+      id: artifact.artifactId,
+      title: artifact.containerName,
+      connector: "Portainer",
+      source: artifact.evidenceSource?.sourceId ?? artifact.portainerConnection.connectionId,
+      proofQuality: "Inspectable Evidence Artifact" as const,
+      provenance: `${artifact.imageName}:${artifact.imageTag}`,
+      collectedAt: formatDateTime(artifact.collectionTimestamp),
+      validationStatus: artifact.validationStatus,
+      hashStatus: `Evidence hash tied to ${artifact.artifactId}`,
+      snapshotStatus: artifact.evidenceHealth,
+      driftStatus: artifact.driftEvents.length ? `${artifact.driftEvents.length} drift event(s)` : "No drift recorded",
+      proves: artifact.evidenceSummary,
+      doesNotProve: "Does not prove application-level AI governance approval or human review.",
+      evidenceHref: `/deployment-evidence/${artifact.artifactId}`,
+      evidenceAccess: "Exact artifact" as const
+    })),
+    ...trace.supabaseEvidenceArtifacts.map((artifact) => ({
+      id: artifact.artifactId,
+      title: artifact.title,
+      connector: "Supabase",
+      source: artifact.evidenceSource?.sourceId ?? artifact.supabaseConnection.connectionId,
+      proofQuality: "Inspectable Evidence Artifact" as const,
+      provenance: artifact.source,
+      collectedAt: formatDateTime(artifact.collectionTimestamp),
+      validationStatus: artifact.validationStatus,
+      hashStatus: `Evidence hash tied to ${artifact.artifactId}`,
+      snapshotStatus: artifact.evidenceHealth,
+      driftStatus: artifact.controlValidations.length ? `${artifact.controlValidations.length} control validation(s)` : "No control validation",
+      proves: artifact.evidenceSummary,
+      doesNotProve: "Does not prove prompt, model, tool, or approval controls outside the data layer.",
+      evidenceHref: `/supabase-evidence/${artifact.artifactId}`,
+      evidenceAccess: "Exact artifact" as const
+    })),
+    ...trace.mcpEvidenceArtifacts.map((artifact) => ({
+      id: artifact.artifactId,
+      title: artifact.title,
+      connector: "MCP",
+      source: artifact.evidenceSource?.sourceId ?? artifact.mcpConnection.connectionId,
+      proofQuality: "Source Metadata Only" as const,
+      provenance: artifact.source,
+      collectedAt: formatDateTime(artifact.collectionTimestamp),
+      validationStatus: artifact.validationStatus,
+      hashStatus: `Evidence hash tied to ${artifact.artifactId}`,
+      snapshotStatus: artifact.evidenceHealth,
+      driftStatus: "Authority metadata review",
+      proves: artifact.evidenceSummary,
+      doesNotProve: artifact.validationStatus === "VALID"
+        ? "Does not prove human approval or policy owner sign-off unless paired with approval evidence."
+        : "Does not prove audit sufficiency until the MCP source limitation is resolved.",
+      evidenceHref: `/mcp-evidence/${artifact.artifactId}`,
+      evidenceAccess: "Exact artifact" as const
+    })),
+    ...trace.notionEvidenceArtifacts.map((artifact) => ({
+      id: artifact.artifactId,
+      title: artifact.title,
+      connector: "Notion",
+      source: artifact.evidenceSource?.sourceId ?? artifact.notionConnection.connectionId,
+      proofQuality: artifact.validationStatus === "VALID" ? "Human Governance Record" as const : "Gap Artifact / Limitation" as const,
+      provenance: artifact.source,
+      collectedAt: formatDateTime(artifact.collectionTimestamp),
+      validationStatus: artifact.validationStatus,
+      hashStatus: `Evidence hash tied to ${artifact.artifactId}`,
+      snapshotStatus: artifact.evidenceHealth,
+      driftStatus: "Governance record review",
+      proves: artifact.evidenceSummary,
+      doesNotProve: artifact.validationStatus === "VALID"
+        ? "Does not prove technical enforcement without connector or repository evidence."
+        : "Does not prove approval because scoped governance content is unavailable.",
+      evidenceHref: `/notion-evidence/${artifact.artifactId}`,
+      evidenceAccess: "Exact artifact" as const
+    })),
+    ...trace.secretEvidenceArtifacts.map((artifact) => ({
+      id: artifact.artifactId,
+      title: artifact.title,
+      connector: "Secrets",
+      source: artifact.evidenceSource?.sourceId ?? artifact.secretsConnection.connectionId,
+      proofQuality: "Source Metadata Only" as const,
+      provenance: artifact.source,
+      collectedAt: formatDateTime(artifact.collectionTimestamp),
+      validationStatus: artifact.validationStatus,
+      hashStatus: `Evidence hash tied to ${artifact.artifactId}`,
+      snapshotStatus: artifact.evidenceHealth,
+      driftStatus: "Metadata-only boundary preserved",
+      proves: artifact.evidenceSummary,
+      doesNotProve: "Does not store or prove secret values, tokens, passwords, certificates, private keys, or connection strings.",
+      evidenceHref: `/secret-evidence/${artifact.artifactId}`,
+      evidenceAccess: "Exact artifact" as const
     }))
-  ].slice(0, 6);
+  ];
 
-  return (
-    <>
-      <header>
-        <Breadcrumbs items={[{ label: "Auditor Workspace" }]} />
-        <p className="text-sm font-medium text-brand">Auditor workspace</p>
-        <h1 className="mt-1 text-3xl font-semibold text-ink">Traceability, evidence, and control testing</h1>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">
-          Auditor-first navigation for evidence discovery, control testing, findings, exceptions, and audit packages.
-        </p>
-        <SecondaryNav items={auditorSecondaryNav} />
-      </header>
+  const missingEvidence = requiredEvidence.filter((item) => item.status === "Missing");
+  const warningEvidence = availableEvidence.filter((item) => !["VALID", "PASS"].includes(String(item.validationStatus)));
+  const exceptions = trace.exceptions.map((exception) => ({
+    id: exception.id,
+    label: exception.exceptionId,
+    status: "Accepted",
+    expires: formatDateTime(exception.expirationDate)
+  }));
+  const sufficiency = missingEvidence.length > 0 ? "Insufficient" : warningEvidence.length > 0 ? "Needs Review" : "Sufficient";
+  const packageStatus = missingEvidence.length > 0 ? "Blocked" : exceptions.length > 0 ? "Exceptions Review" : trace.assuranceScore >= 80 ? "Ready for Package" : "Needs Review";
 
-      <div className="mt-6 grid gap-0 sm:grid-cols-5">
-        <Metric label="Findings" value={data.findings.length} icon={FileSearch} />
-        <Metric label="Exceptions" value={data.activeExceptions.length} icon={AlertTriangle} />
-        <Metric label="Evidence gaps" value={evidenceGaps.length} icon={ClipboardCheck} />
-        <Metric label="Failed tests" value={failedRuns.length} icon={Radar} />
-        <Metric label="Trace paths" value={data.regulations.length} icon={GitBranch} />
-      </div>
-
-      <Section title="Action Required">
-        <ActionRequiredList items={actionItems} />
-      </Section>
-
-      <Section id="scope" title="Auditor workflow">
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-6">
-          <Quick href="/auditor" title="Scope" detail="Select systems, regulations, controls, and package scope." icon={FileSearch} />
-          <Quick href="/auditor-workspace#prove-control" title="Prove a Control" detail="Use the guided proof path below before opening a control detail page." icon={Radar} />
-          <Quick href="/traceability" title="Traceability" detail="Follow regulation to control to evidence and finding impact." icon={GitBranch} />
-          <Quick href="/evidence-repository" title="Evidence Review" detail="Inspect evidence objects, owners, status, reviewers, and source links." icon={ClipboardCheck} />
-          <Quick href="/evidence-assurance/artifacts" title="Artifact Verification" detail="Verify collected artifacts, snapshots, hashes, drift, and assurance." icon={AlertTriangle} />
-          <Quick href="/audit-packages" title="Audit Package" detail="Review package scope, evidence links, exceptions, and export readiness." icon={PackageCheck} />
-        </div>
-      </Section>
-
-      <Section id="prove-control" title="Prove a Control">
-        <div className="rounded-md border border-line bg-white p-5">
-          <div className="text-sm font-semibold text-ink">Canonical proof path</div>
-          <p className="mt-2 text-sm leading-6 text-slate-700">
-            Scope a control, inspect traceability, review supporting evidence, verify artifact provenance, then add the evidence set to an audit package.
-          </p>
-          <div className="mt-4">
-            <ProofChain steps={[
-              { stage: "control", title: "Select Control", detail: "Start from an audit scope and a specific control.", href: "/controls/AI-GOV-003", current: true },
-              { stage: "requirement", title: "Required Evidence", detail: "Review the evidence types required to prove the control." },
-              { stage: "source", title: "Evidence Source", detail: "Confirm the source system or connector that produced proof." },
-              { stage: "artifact", title: "Available and Missing Evidence", detail: "Inspect available artifacts and identify missing evidence." },
-              { stage: "assurance", title: "Assurance", detail: "Review validation checks, warnings, and confidence." },
-              { stage: "traceability", title: "Traceability", detail: "Follow evidence back to controls, risks, systems, and regulations.", href: "/evidence-assurance/traceability" },
-              { stage: "package", title: "Package Status", detail: "Add verified proof to the audit package or raise an exception.", href: "/audit-packages" }
-            ]} />
-          </div>
-          <div className="mt-5 grid gap-3 md:grid-cols-3">
-            <ProofCard href="/controls/AI-GOV-003" title="AI-GOV-003 · Prompt approved" detail="Review required prompt evidence, artifact provenance, assurance, drift, and traceability." />
-            <ProofCard href="/controls/AI-GOV-006" title="AI-GOV-006 · Tool permissions approved" detail="Verify tool policy evidence, source collection, validation checks, and missing elements." />
-            <ProofCard href="/controls/AUD-001" title="AUD-001 · Audit trail completeness" detail="Follow control evidence through artifact, snapshot, drift, and audit package readiness." />
-          </div>
-        </div>
-      </Section>
-
-      <Section id="evidence-review" title="Evidence review queue">
-        <div className="grid gap-3 md:grid-cols-2">
-          {reviewQueue.map((object) => (
-            <Link key={object.id} href={`/evidence/${object.evidenceId}`} className="rounded-md border border-line bg-white p-4 hover:bg-panel">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="text-sm font-semibold text-ink">{object.evidenceId} · {object.title}</div>
-                  <div className="mt-1 text-xs text-slate-500">{object.aiSystem.name} · Owner {object.owner} · Reviewer {object.reviewer}</div>
-                </div>
-                <StatusBadge status={object.status} />
-              </div>
-            </Link>
-          ))}
-        </div>
-      </Section>
-
-      <Section title="Evidence health">
-        <div className="overflow-hidden rounded-md border border-line bg-white">
-          <table className="min-w-full divide-y divide-line text-sm">
-            <thead className="bg-panel text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-              <tr><th className="px-4 py-3">System</th><th className="px-4 py-3">Requirement</th><th className="px-4 py-3">Health</th><th className="px-4 py-3">Validation</th><th className="px-4 py-3">Rationale</th></tr>
-            </thead>
-            <tbody className="divide-y divide-line">
-              {evidenceGaps.map((record) => (
-                <tr key={record.id}>
-                  <td className="px-4 py-4 font-medium text-ink">{record.aiSystem.name}</td>
-                  <td className="px-4 py-4 text-slate-700">{record.evidenceRequirement.evidenceType}</td>
-                  <td className="px-4 py-4"><StatusBadge status={record.health} /></td>
-                  <td className="px-4 py-4"><StatusBadge status={record.validation} /></td>
-                  <td className="px-4 py-4 text-slate-700">{record.rationale}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </Section>
-
-      <div className="mt-8 grid gap-6 xl:grid-cols-3">
-        <Section title="Evidence packages">
-          <div className="space-y-3">
-            {packages.map((auditPackage) => (
-              <Link key={auditPackage.id} href="/audit-packages" className="block rounded-md border border-line bg-white p-4 hover:bg-panel">
-                <div className="text-sm font-semibold text-ink">{auditPackage.title}</div>
-                <div className="mt-1 text-xs text-slate-500">{auditPackage.packageType} · {auditPackage.evidenceLinks.length} evidence · {auditPackage.owner}</div>
-              </Link>
-            ))}
-          </div>
-        </Section>
-        <Section title="Recent evidence changes">
-          <div className="space-y-3">
-            {recentEvidence.map((object) => (
-              <Link key={object.id} href={`/evidence/${object.evidenceId}`} className="block rounded-md border border-line bg-white p-4 hover:bg-panel">
-                <div className="text-sm font-semibold text-ink">{object.title}</div>
-                <div className="mt-1 text-xs text-slate-500">{object.evidenceId} · updated {formatDate(object.lastUpdated)}</div>
-              </Link>
-            ))}
-          </div>
-        </Section>
-        <Section title="Evidence exceptions">
-          <div className="space-y-3">
-            {evidenceExceptions.map((exception) => (
-              <Link key={exception.id} href="/exceptions" className="block rounded-md border border-line bg-white p-4 hover:bg-panel">
-                <div className="text-sm font-semibold text-ink">{exception.exceptionId}</div>
-                <div className="mt-1 text-xs text-slate-500">{exception.finding.aiSystem.name} · expires {formatDate(exception.expirationDate)}</div>
-              </Link>
-            ))}
-          </div>
-        </Section>
-      </div>
-    </>
-  );
+  return {
+    id: trace.control.code,
+    auditScope: auditPackage?.scope ?? "Q2 AI Governance Audit",
+    packageId: auditPackage?.packageId ?? "AUDPKG-REFERENCE-001",
+    packageTitle: auditPackage?.title ?? "Reference Audit Package",
+    controlId: trace.control.code,
+    controlTitle: trace.control.title,
+    controlObjective: trace.control.description,
+    testExpectation: trace.control.governanceStory?.validationNarrative ?? `Auditor verifies that ${trace.control.title.toLowerCase()} is implemented, evidenced, and traceable.`,
+    controlOwner: trace.systems[0]?.riskOwner ?? trace.systems[0]?.businessOwner ?? "Control Owner",
+    systemsInScope: trace.systems.map((system) => system.name),
+    requiredEvidence,
+    availableEvidence,
+    missingEvidence,
+    evidenceSufficiency: sufficiency,
+    assuranceJudgment: assuranceJudgment(trace.assuranceScore, sufficiency),
+    assuranceScore: trace.assuranceScore,
+    exceptions,
+    packageStatus,
+    reviewerStatus: packageStatus === "Ready for Package" ? "Reviewer can add proof to package" : "Reviewer action required",
+    openBlockers: [
+      ...missingEvidence.map((item) => `${item.label} missing`),
+      ...warningEvidence.slice(0, 2).map((item) => `${item.title} needs validation review`)
+    ],
+    proofStatus: packageStatus === "Ready for Package" ? "Ready" : packageStatus === "Blocked" ? "Blocked" : "Needs Review",
+    primaryAction: primaryActionFor({ missingEvidence, warningEvidence, sufficiency, packageStatus }),
+    auditTrail: [
+      `Scope loaded from ${auditPackage?.packageId ?? "reference package"}`,
+      `${availableEvidence.length} available artifact(s) linked`,
+      `${missingEvidence.length} required evidence gap(s) identified`,
+      `Assurance score calculated at ${trace.assuranceScore}%`
+    ]
+  };
 }
 
-function Quick({ href, title, detail, icon: Icon }: { href: string; title: string; detail: string; icon: typeof FileSearch }) {
-  return (
-    <Link href={href} className="rounded-md border border-line bg-white p-4 hover:bg-panel">
-      <div className="flex items-center gap-2 text-sm font-semibold text-ink">
-        <Icon className="h-4 w-4 text-brand" />
-        {title}
-      </div>
-      <p className="mt-2 text-sm leading-6 text-slate-700">{detail}</p>
-    </Link>
-  );
+function repositoryArtifactProof(controlId: string, artifactType: string, artifactName: string) {
+  if (controlId === "AI-GOV-006" && artifactType === "POLICY") {
+    return `${artifactName} proves approved and denied Travel Brain tool boundaries are declared in GitHub policy evidence.`;
+  }
+  if (controlId === "AI-GOV-006" && artifactType === "PROMPT") {
+    return `${artifactName} supports prohibited-action boundaries for Travel Brain user-facing behavior.`;
+  }
+  if (controlId === "AI-GOV-003" && artifactType === "PROMPT") {
+    return `${artifactName} proves a prompt artifact exists with versioned repository evidence.`;
+  }
+  return `Supports ${controlId} through ${artifactType.toLowerCase()} evidence.`;
 }
 
-function ProofCard({ href, title, detail }: { href: string; title: string; detail: string }) {
-  return (
-    <Link href={href} className="rounded-md border border-line bg-panel p-4 hover:bg-white">
-      <div className="text-sm font-semibold text-ink">{title}</div>
-      <p className="mt-2 text-sm leading-6 text-slate-700">{detail}</p>
-      <div className="mt-3 text-xs font-semibold text-brand">Prove Control</div>
-    </Link>
-  );
+function requirement(label: string, category: string, present: boolean): ProofRequirement {
+  return { id: `${category}-${label}`, label, category, status: present ? "Available" : "Missing" };
+}
+
+function isPresent(label: string, presentLabels: string[]) {
+  return presentLabels.some((present) => present === label);
+}
+
+function assuranceJudgment(score: number, sufficiency: string) {
+  if (sufficiency === "Insufficient") return "Insufficient for audit";
+  if (sufficiency === "Needs Review") return "Partially sufficient pending review";
+  if (score >= 80) return "Sufficient for audit package";
+  return "Evidence mapped but assurance is not final";
+}
+
+function primaryActionFor({
+  missingEvidence,
+  warningEvidence,
+  sufficiency,
+  packageStatus
+}: {
+  missingEvidence: ProofRequirement[];
+  warningEvidence: ProofArtifact[];
+  sufficiency: string;
+  packageStatus: string;
+}) {
+  if (missingEvidence.length > 0) return "Request Evidence";
+  if (warningEvidence.length > 0) return "Verify Artifact";
+  if (sufficiency === "Insufficient") return "Raise Exception";
+  if (packageStatus === "Ready for Package") return "Add to Audit Package";
+  return "Mark Control Ready";
+}
+
+function connectorFromArtifactType(type: string) {
+  if (type.includes("PROMPT") || type.includes("POLICY") || type.includes("MANIFEST")) return "GitHub";
+  if (type.includes("LOG") || type.includes("RUNTIME")) return "Logs";
+  return "Evidence Repository";
+}
+
+function formatDateTime(value: Date) {
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "2-digit", year: "numeric" }).format(value);
 }
