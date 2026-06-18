@@ -97,7 +97,7 @@ export default async function GovernancePage() {
       traceability: finding.aiSystem.name,
       packageStatus: finding.severity === "CRITICAL" || finding.severity === "HIGH" ? "Blocked" : "Needs review",
       workflowState: finding.status === "IN_PROGRESS" ? "Remediation Planned" : "New",
-      scopes: ["My Work", "High Severity", "Committee Ready"],
+      scopes: ["My Work", "Team Queue", "High Severity", "Committee-Ready"],
       exactObjectHref: `/findings#finding-${finding.findingId}`
     })),
     ...sourceIssues.map((source) => ({
@@ -149,7 +149,7 @@ export default async function GovernancePage() {
       traceability: `${finding.confidenceLevel} confidence`,
       packageStatus: finding.validationStatus === "VALID" ? "Needs review" : "Blocked",
       workflowState: "In Review",
-      scopes: ["Discovery", "My Work"],
+      scopes: ["Discovery Review", "My Work", "Team Queue"],
       exactObjectHref: "/evidence-assurance/asset-discovery#findings"
     })),
     ...data.activeExceptions.map((exception) => ({
@@ -175,7 +175,7 @@ export default async function GovernancePage() {
       traceability: exception.finding.aiSystem.name,
       packageStatus: "Needs review",
       workflowState: "Exception Requested",
-      scopes: ["Committee Ready", "My Work"],
+      scopes: ["Exceptions Expiring", "Committee-Ready", "My Work", "Team Queue"],
       exactObjectHref: "/exceptions"
     })),
     ...riskData.acceptedRisks.map((risk) => ({
@@ -201,7 +201,7 @@ export default async function GovernancePage() {
       traceability: risk.aiSystem.name,
       packageStatus: "Needs review",
       workflowState: "Accepted Risk",
-      scopes: ["Committee Ready", "My Work"],
+      scopes: ["Committee-Ready", "My Work", "Team Queue"],
       exactObjectHref: "/ai-risk"
     })),
     ...reviewTasks.map(({ system, evidence }) => ({

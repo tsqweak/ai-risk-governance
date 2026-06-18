@@ -20,7 +20,7 @@ Operating constraints respected:
 
 ## Implemented Experience
 
-The Governance Work route now behaves as an enterprise GRC-style operations console inspired by ServiceNow GRC, Archer, AuditBoard, and Workiva.
+The Governance Work route now behaves as an AI Governance Operations workbench inspired by enterprise case-management patterns from ServiceNow GRC, Archer, AuditBoard, and Workiva without copying their generic GRC language.
 
 Design decision:
 
@@ -49,6 +49,7 @@ Accepted baseline decision:
 - The selected case record is the primary work object.
 - The queue, workflow rail, and proof layer support the case rather than acting as separate dashboards.
 - The previous sidebar-dominant Governance Work composition should not be used as the baseline for this workspace.
+- The product language should read as AI Governance Operations, not generic GRC.
 
 Prototype boundary:
 
@@ -69,17 +70,28 @@ The work queue uses existing platform data from:
 - Accepted risks.
 - Evidence review tasks.
 
+Data provenance:
+
+- Governance Work is powered by Prisma database records returned by `getExecutiveCommandCenter`, `getGovernanceOperationsDashboard`, and `getAiRiskDashboard`.
+- The current records are a mixed reference portfolio: seeded/reference portfolio records, Travel Brain connector/reference evidence, and stored database records produced by prior evidence collection runs.
+- The page does not perform live connector collection on render.
+- The page does not yet represent automatic ingestion of Russell's full real project portfolio.
+- The UI labels the current scope as `Reference portfolio` so users do not mistake the work queue for a complete live inventory of actual projects.
+- Future work should connect this experience to real onboarded systems through the existing manifest, discovery, and evidence-source operating model.
+
 Each row exposes:
 
 - Type indicator.
-- Case ID.
-- Issue title.
+- Human-readable governance work-item title.
 - Impacted AI system.
+- Impacted control, risk, or audit scope.
 - Owner.
 - Due date.
 - Severity.
+- Evidence confidence.
 - Workflow state.
 - Recommended next action.
+- Committee readiness where relevant.
 
 Queue controls support:
 
@@ -88,6 +100,16 @@ Queue controls support:
 - Owner.
 - Due date.
 - AI system.
+
+Blueprint queue scopes:
+
+- My Work.
+- Team Queue.
+- Audit Blockers.
+- High Severity.
+- Discovery Review.
+- Exceptions Expiring.
+- Committee-Ready.
 
 Responsive desktop behavior:
 
@@ -103,16 +125,27 @@ The selected record answers:
 - Case ID.
 - Case type.
 - Impacted AI system.
+- Lifecycle/risk posture.
 - Affected control, risk, or audit scope.
-- Why this exists.
-- What evidence supports it.
-- What happens if ignored.
+- Audit impact.
+- Evidence confidence.
+- Governance blocker.
+- Trigger.
+- Governance impact.
+- Evidence blocker.
 - Who owns it.
 - When it is due.
 - Which workflow state it is in.
 - Which action is defensible next.
 
 The primary action deep-links to the exact existing object whenever the data already provides one.
+
+The selected case summary intentionally avoids dense source paragraphs. It uses four operational lines:
+
+- Trigger.
+- Governance impact.
+- Evidence blocker.
+- Recommended next action.
 
 ## Evidence And Traceability
 
@@ -121,16 +154,18 @@ Evidence is visible in two layers:
 1. The selected case record contains compact evidence-used sections.
 2. A bottom `Proof Chain & Assurance` layer provides the audit/proof path, matching the enterprise reference layout.
 
+The proof layer now answers the operational question: `Can we prove this case, and what is blocking us?`
+
 The proof layer shows:
 
-- Required proof.
-- Evidence received.
-- Evidence gaps.
-- Evidence source.
-- Evidence artifact.
-- Assurance status.
-- Traceability.
-- Package readiness.
+- Governance claim.
+- Current proof available.
+- Blocking gap.
+- Evidence source or connector.
+- Source limitation.
+- Assurance judgment and reason.
+- Audit or package consequence.
+- Next proof action.
 
 It helps the analyst answer:
 
@@ -139,12 +174,14 @@ It helps the analyst answer:
 - What control, risk, source, or requirement does it support?
 - Is the evidence current, missing, stale, warning, or blocked?
 - Can this support audit or committee review?
+- What exact proof action should happen next?
 
 Responsive proof behavior:
 
 - At wide desktop widths, proof cards can show compact proof labels.
 - At smaller desktop widths, the proof layer behaves more like a status strip so evidence labels are not awkwardly truncated.
 - The proof layer remains visible but secondary to the selected case record.
+- Missing proof states must be contextual. For example, the UI distinguishes evidence missing, assurance confidence missing, and package readiness blocked.
 
 ## What Changed
 
@@ -176,6 +213,7 @@ This work did not:
 - The route-level prototype visually replaces the app shell, but the global shell still exists behind it in the DOM.
 - Some evidence quality and package-readiness values are derived from current source mappings rather than a dedicated case-management schema.
 - At `1280 x 720`, the proof strip is compact and secondary, but still consumes meaningful vertical space. Later interaction work should collapse or drawerize proof by default at smaller desktop heights.
+- Real project onboarding and live portfolio ingestion remain out of scope for this design baseline. The current Governance Work queue should be treated as a database-backed reference portfolio until project ingestion and portfolio onboarding are connected through the existing manifest, discovery, and evidence-source operating model.
 
 ## Accepted Desktop QA
 
